@@ -1,9 +1,10 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+ 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto, LoginUserDto } from '../dto/user.dto';
 import { Repository } from 'typeorm';
@@ -18,9 +19,12 @@ export class UserService {
     ){}
     async signUp(createUserDto : CreateUserDto) : Promise<User> {
         const {password ,email, ...rest} = createUserDto
+        console.log(email)
         const existingUser = await this.userRepository.findOne({where: {email}})
+        console.log(email)
         if (existingUser) {
-            throw new UnauthorizedException('Email already exits')
+            console.log('mohamed')
+            throw new ConflictException('Email already exits')
         }
         const hashedPassword  = await bcrypt.hash(password,10)
         const user = this.userRepository.create({

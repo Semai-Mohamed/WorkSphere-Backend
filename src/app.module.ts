@@ -20,7 +20,7 @@ import { AuthModule } from './auth/auth.module';
       password: 'postgres',
       database: 'postgres',
       entities: [User],
-      synchronize: false,
+      synchronize: true,
     }),
     UserModule,
     AuthModule

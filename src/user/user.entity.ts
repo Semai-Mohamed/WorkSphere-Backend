@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 export enum UserRole {
@@ -37,9 +38,6 @@ export class User {
 
     @Column({ nullable: true })
     photo? : string
-
-    @Column()
-    blocked : boolean
     
     @Column({ nullable: true })
     description? : string
