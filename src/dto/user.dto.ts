@@ -1,20 +1,24 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-import { IsEmail, IsNotEmpty, IsOptional, MinLength, IsEnum, Matches,  } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, MinLength, IsEnum, Matches, IsNumber, IsString,  } from 'class-validator';
 import { UserRole } from '../user/user.entity';
 
 export class CreateUserDto {
-  id : any
+  @IsNotEmpty()
+  @IsNumber()
+  id : number
 
   @IsNotEmpty({ message: 'First name is required' } )
+  @IsString()
   firstName: string;
 
   @IsNotEmpty({ message: 'Last name is required' })
+  @IsString()
   lastName: string;
 
   @IsEmail({}, { message: 'Email must be valid' })
   email: string;
 
   @IsNotEmpty({ message: 'Mobile number is required' })
+  @IsString()
   mobile: string;
 
   @IsNotEmpty({ message: 'Password cannot be empty' })

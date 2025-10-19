@@ -5,6 +5,7 @@ import { CreateUserDto } from "src/dto/user.dto";
 import { AbilityBuilder,   AbilityTuple,   createMongoAbility,  ExtractSubjectType,  InferSubjects, MongoAbility, MongoQuery } from '@casl/ability';
 import { Action } from "../action";
 import { UserRole } from "src/user/user.entity";
+import { Project } from "src/project/project.entity";
 
 type Subjects = InferSubjects<typeof Article | typeof CreateUserDto> | 'all '
 export type AppAbility = MongoAbility<AbilityTuple, MongoQuery>;
@@ -16,8 +17,12 @@ export class CaslAbilityFactory {
 
     if (user.role === UserRole.ADMIN) {
       can(Action.Manage, 'all')
-    } else {
-      can(Action.Read, 'all')
+    } 
+    else if (user.role === UserRole.FREELANCER) {
+        can(Action.Update,Project , { user: { id: user.id } })
+        can(Action.Delete,Project , { user: { id: user.id } })
+        
+        
     }
 
     can(Action.Update, Article, { authorId: user.id });

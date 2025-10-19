@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Project } from "src/project/project.entity";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 export enum UserRole {
   ADMIN = 'admin',
@@ -47,6 +48,9 @@ export class User {
 
     @UpdateDateColumn()
     updatedAt: Date;
+
+     @OneToMany(() => Project, project => project.user)
+     projects: Project[];
 
 
 }

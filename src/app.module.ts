@@ -10,6 +10,10 @@ import { User } from './user/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { CaslModule } from './casl/casl.module';
 import { DashbordModule } from './dashbord/dashbord.module';
+import { ConversationModule } from './conversation/conversation.module';
+import { NotificationModule } from './notification/notification.module';
+import { ProjectModule } from './project/project.module';
+import { OfferModule } from './offer/offer.module';
 
 @Module({
   imports: [
@@ -27,7 +31,11 @@ import { DashbordModule } from './dashbord/dashbord.module';
     UserModule,
     AuthModule,
     CaslModule,
-    DashbordModule
+    DashbordModule,
+    ConversationModule,
+    NotificationModule,
+    ProjectModule,
+    OfferModule
   ],
   controllers: [AppController],
   providers: [AppService],
