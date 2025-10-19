@@ -3,6 +3,8 @@ import { IsEmail, IsNotEmpty, IsOptional, MinLength, IsEnum, Matches,  } from 'c
 import { UserRole } from '../user/user.entity';
 
 export class CreateUserDto {
+  id : any
+
   @IsNotEmpty({ message: 'First name is required' } )
   firstName: string;
 

@@ -8,6 +8,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { User } from './user/user.entity';
 import { AuthModule } from './auth/auth.module';
+import { CaslModule } from './casl/casl.module';
+import { DashbordModule } from './dashbord/dashbord.module';
 
 @Module({
   imports: [
@@ -23,7 +25,9 @@ import { AuthModule } from './auth/auth.module';
       synchronize: true,
     }),
     UserModule,
-    AuthModule
+    AuthModule,
+    CaslModule,
+    DashbordModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
@@ -29,7 +30,7 @@ export class AuthService {
         if(!user){
             throw new BadRequestException('User login failed')
         }
-        const payload = {sup : user.id , username : `${user.firstName} ${user.lastName}`, role : user.role}
+        const { password : _, ...payload } = user
         return {
             access_token : await this.jwtService.signAsync(payload)
         }
