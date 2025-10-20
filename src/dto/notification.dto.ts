@@ -1,9 +1,9 @@
-import { IsNotEmpty, IsString,  IsBoolean, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsString,  IsBoolean, IsNumber} from 'class-validator';
 
 export class CreateProjectDto {
   @IsNotEmpty()
   @IsNumber()
-  id : number
+  id :number
 
   @IsNotEmpty({ message: 'Message is required' })
   @IsString()
@@ -14,8 +14,8 @@ export class CreateProjectDto {
   checked: boolean;
 
   @IsNotEmpty({ message: 'userId cannot be empty' })
-  @IsString()
-  userId: string;
+  @IsNumber()
+  userId: number;
 
   @IsNotEmpty({ message: 'purpose cannot be empty' })
   @IsString()

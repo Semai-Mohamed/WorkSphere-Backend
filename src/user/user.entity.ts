@@ -2,8 +2,9 @@
 import { Conversation } from "src/conversation/entity/conversation.entity";
 import { Message } from "src/conversation/entity/message.entity";
 import { Notification } from "src/notification/notification.entity";
+import { Offre } from "src/offer/offer.entity";
 import { Project } from "src/project/project.entity";
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 export enum UserRole {
   ADMIN = 'admin',
@@ -67,5 +68,11 @@ export class User {
 
     @OneToMany(() => Message, message => message.sender)
     messages: Message[];
+
+    @OneToMany(() => Offre, offre => offre.freelancer, { eager: true })
+    createdOffres: Offre[];
+
+    @ManyToMany(() => Offre, offre => offre.enroledUsers, { eager: true })
+    enrolledOffres: Offre[];
 
 }

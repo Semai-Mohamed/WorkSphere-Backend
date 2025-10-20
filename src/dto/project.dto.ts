@@ -2,8 +2,8 @@ import { IsNotEmpty, IsString, IsArray, IsBoolean, IsNumber } from 'class-valida
 
 export class CreateProjectDto {
   @IsNotEmpty()
-  @IsNumber()
-  id : number
+  @IsString()
+  id : string
 
   @IsNotEmpty({ message: 'Title is required' })
   @IsString()
@@ -19,8 +19,8 @@ export class CreateProjectDto {
   reserved: string[];
 
   @IsNotEmpty({ message: 'userId cannot be empty' })
-  @IsString()
-  userId: string;
+  @IsNumber()
+  userId: number;
 
   @IsNotEmpty({ message: 'reservedCount cannot be empty' })
   @IsNumber()
