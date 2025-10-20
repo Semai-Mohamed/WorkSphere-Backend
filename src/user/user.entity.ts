@@ -1,4 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
+import { Conversation } from "src/conversation/entity/conversation.entity";
+import { Message } from "src/conversation/entity/message.entity";
+import { Notification } from "src/notification/notification.entity";
 import { Project } from "src/project/project.entity";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
@@ -49,8 +52,20 @@ export class User {
     @UpdateDateColumn()
     updatedAt: Date;
 
-     @OneToMany(() => Project, project => project.user)
-     projects: Project[];
+    @OneToMany(() => Project, project => project.user)
+    projects: Project[];
+     
+    @OneToMany(() => Notification, notification => notification.user)
+    notifications: Notification[];
 
+
+    @OneToMany(() => Conversation, conversation => conversation.creator)
+    createdConversations: Conversation[];
+
+    @OneToMany(() => Conversation, conversation => conversation.participant)
+    participatedConversations: Conversation[];
+
+    @OneToMany(() => Message, message => message.sender)
+    messages: Message[];
 
 }

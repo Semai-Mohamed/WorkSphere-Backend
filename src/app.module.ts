@@ -14,6 +14,10 @@ import { ConversationModule } from './conversation/conversation.module';
 import { NotificationModule } from './notification/notification.module';
 import { ProjectModule } from './project/project.module';
 import { OfferModule } from './offer/offer.module';
+import { Project } from './project/project.entity';
+import { Notification } from './notification/notification.entity';
+import { Conversation } from './conversation/entity/conversation.entity';
+import { Message } from './conversation/entity/message.entity';
 
 @Module({
   imports: [
@@ -25,7 +29,7 @@ import { OfferModule } from './offer/offer.module';
       username: 'postgres',
       password: 'postgres',
       database: 'postgres',
-      entities: [User],
+      entities: [User,Project,Notification,Conversation,Message],
       synchronize: true,
     }),
     UserModule,
