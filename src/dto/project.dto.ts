@@ -1,32 +1,33 @@
-import { IsNotEmpty, IsString, IsArray, IsBoolean, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsString, IsArray, } from 'class-validator';
 
 export class CreateProjectDto {
   @IsNotEmpty()
   @IsString()
   id : string
 
-  @IsNotEmpty({ message: 'Title is required' })
+  @IsNotEmpty()
   @IsString()
   title: string;
 
-  @IsNotEmpty({ message: 'Description is required' })
+  @IsNotEmpty()
   @IsString()
   description: string;
 
-  @IsNotEmpty({ message: 'Reserved is required' })
+  @IsString()
+  link?: string;
+
+  
+  @IsString()
+  photo?: string;
+
   @IsArray()
-  @IsString({ each: true }) 
-  reserved: string[];
+  @IsString({ each: true })
+  category: string[];
 
-  @IsNotEmpty({ message: 'userId cannot be empty' })
-  @IsNumber()
-  userId: number;
+  
+  @IsArray()
+  @IsString({ each: true })
+  technologies: string[];
 
-  @IsNotEmpty({ message: 'reservedCount cannot be empty' })
-  @IsNumber()
-  reservedCount: number;
-
-  @IsNotEmpty({ message: 'acceptedFreelancer cannot be empty' })
-  @IsBoolean()
-  acceptedFreelancer: boolean;
+  
 }

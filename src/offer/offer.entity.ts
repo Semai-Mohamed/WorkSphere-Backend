@@ -1,12 +1,13 @@
-import { Type } from 'src/dto/offer.service.dto';
+import { Conversation } from 'src/conversation/entity/conversation.entity';
+import { Status, Type } from 'src/dto/offer.service.dto';
 import { User } from 'src/user/user.entity';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinTable, OneToOne } from 'typeorm';
 
 @Entity()
 export class Offre {
   @PrimaryGeneratedColumn()
   id: number;
-
+  
   @Column({ type: 'varchar', length: 255 })
   service: string;
 
@@ -17,15 +18,37 @@ export class Offre {
   price: string;
 
   @Column({ type: 'int', default: 0 })
-  numEnrolled: number;
+  enrolledCount: number;
 
   @Column({ type: 'enum', enum: Type })
-  role: Type;
+  type: Type;
+  
+  @Column({ type: 'array', length: 100 })
+  category: string[];
+
+  @Column({ type: 'array'})
+  technologies: string[];
+  
+  @Column({
+      type: 'enum',
+      enum: Status,
+           })
+  status: Status;
 
   @ManyToOne(() => User,user => user.createdOffres)
-  freelancer: User;
+  user: User;
 
   @ManyToMany(() => User, user => user.enrolledOffres)
   @JoinTable() 
   enroledUsers: User[];
+  
+  @ManyToOne(() => User, { eager: true,  })
+  accepted: User;
+
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  createdAt: Date;
+
+  @OneToOne(() => Conversation , {eager : true})
+  projectConversation = Conversation
+
 }

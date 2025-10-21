@@ -15,9 +15,7 @@ export class UserService {
     ){}
     async signUp(createUserDto : CreateUserDto) : Promise<User> {
         const {password ,email, ...rest} = createUserDto
-        console.log(email)
         const existingUser = await this.userRepository.findOne({where: {email}})
-        console.log(email)
         if (existingUser) {
             console.log('mohamed')
             throw new ConflictException('Email already exits')
@@ -49,4 +47,25 @@ export class UserService {
         return result as User 
 
     }
+
+    async findByEmail(email: string): Promise<User | null> {
+  return this.userRepository.findOne({ where: { email } });
+}
+
+    async createFromGoogle(googleUser: {
+    email: string;
+    firstName: string;
+    lastName: string;
+    avatar: string;
+    }): Promise<User> {
+  const user = this.userRepository.create({
+    email: googleUser.email,
+    firstName: googleUser.firstName,
+    lastName: googleUser.lastName,
+    photo: googleUser.avatar,
+    password: null, 
+  });
+    return this.userRepository.save(user);
+}
+
 }

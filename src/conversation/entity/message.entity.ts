@@ -11,7 +11,10 @@ export class Message {
   content: string;
 
   @ManyToOne(() => User, { eager: true })
-  sender: User;
+  creator: User;
+
+  @ManyToOne(() => User, { eager: true })
+  participant: User;
 
   @ManyToOne(() => Conversation, conversation => conversation.messages)
   conversation: Conversation;

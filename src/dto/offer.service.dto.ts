@@ -1,38 +1,44 @@
-import { IsNotEmpty, IsString, IsNumber, IsArray, IsEnum } from 'class-validator';
+import { IsNotEmpty, IsString, IsNumber, IsArray, IsEnum, IsOptional } from 'class-validator';
 export enum Type {
   FREELANCE_OFFER = 'freelanceOffre',
   CLIENT_OFFER= 'clientOffre',
+}
+export enum Status {
+  FINISHED = "finished",
+  NOTFINISHED = "notfinished",
+  NOTAPPROVED = "not approved"
+  
 }
 export class CreateOffreDto {
   @IsNotEmpty()
   @IsNumber()
   id : number
 
-  @IsNotEmpty({ message: 'Service is required' })
+  @IsNotEmpty({ message: 'Service name is required' })
   @IsString()
   service: string;
 
-  @IsNotEmpty({ message: 'Description cannot be empty' })
+  @IsNotEmpty({ message: 'Description is required' })
   @IsString()
   description: string;
 
-  @IsNotEmpty({message : 'Price cannot be empty'})
+  @IsNotEmpty({ message: 'Price is required' })
   @IsString()
   price: string;
-  
-  @IsNotEmpty({ message: 'Reserved is required' })
+
+  @IsEnum(Type)
+  type: Type;
+
   @IsArray()
-  enroledUsers: number[];
+  @IsString({ each: true })
+  category: string[];
 
-  @IsNotEmpty()
-  @IsNumber()
-  numEnrolled : number
+  @IsArray()
+  @IsString({ each: true })
+  technologies: string[];
 
-  @IsNotEmpty()
-  @IsNumber()
-  FreelencerId : number
+  @IsEnum(Status)
+  status: Status;
 
-  @IsEnum(Type, { message: 'Type must be one of the allowed values' })
-    role?: Type;
+  
 }
-

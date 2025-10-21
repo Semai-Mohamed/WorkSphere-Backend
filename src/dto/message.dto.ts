@@ -9,9 +9,13 @@ export class CreateMessageDto {
   @IsString()
   content: string;
 
-  @IsNotEmpty({ message: 'participant cannot be empty' })
+  @IsNotEmpty()
   @IsNumber()
-  senderId: number;
+  creatorId: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  participantId: number;
 
   @IsNotEmpty()
   @IsNumber()

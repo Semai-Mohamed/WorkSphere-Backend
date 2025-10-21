@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { Conversation } from "src/conversation/entity/conversation.entity";
 import { Message } from "src/conversation/entity/message.entity";
+import { AuthProvider } from "src/dto/user.dto";
 import { Notification } from "src/notification/notification.entity";
 import { Offre } from "src/offer/offer.entity";
 import { Project } from "src/project/project.entity";
@@ -29,8 +29,15 @@ export class User {
     @Column()
     mobile : string
 
-    @Column()
-    password : string
+    @Column({
+        type: 'enum',
+        enum: AuthProvider,
+        default: AuthProvider.LOCAL
+    })
+    provider: AuthProvider;
+
+    @Column({ nullable: true })
+    password?: string;
 
     @Column({ nullable: true })
     googleId? : string
@@ -66,10 +73,13 @@ export class User {
     @OneToMany(() => Conversation, conversation => conversation.participant)
     participatedConversations: Conversation[];
 
-    @OneToMany(() => Message, message => message.sender)
-    messages: Message[];
+    @OneToMany(() => Message, message => message.creator)
+    createdmessages: Message[];
 
-    @OneToMany(() => Offre, offre => offre.freelancer, { eager: true })
+    @OneToMany(() => Message, Message => Message.participant)
+    participatedmessages: Message[];
+
+    @OneToMany(() => Offre, offre => offre.user, { eager: true })
     createdOffres: Offre[];
 
     @ManyToMany(() => Offre, offre => offre.enroledUsers, { eager: true })
