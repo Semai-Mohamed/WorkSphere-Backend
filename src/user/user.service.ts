@@ -15,18 +15,20 @@ export class UserService {
     ){}
     async signUp(createUserDto : CreateUserDto) : Promise<User> {
         const {password ,email, ...rest} = createUserDto
+        if (!password) {
+            throw new BadRequestException('Password is required')
+        }
         const existingUser = await this.userRepository.findOne({where: {email}})
         if (existingUser) {
-            console.log('mohamed')
             throw new ConflictException('Email already exits')
         }
-        const hashedPassword  = await bcrypt.hash(password,10)
+        const hashedPassword  = await bcrypt.hash(password, 10)
         const user = this.userRepository.create({
             ...rest,
             email,
             password : hashedPassword
         })
-        const savedUser =  this.userRepository.save(user)
+        const savedUser =  await this.userRepository.save(user)
         if(!savedUser) {
             throw new BadRequestException('User could not be created')
         }
@@ -36,10 +38,10 @@ export class UserService {
     async signIn(loginUserDto : LoginUserDto) : Promise<User> {
         const {email , password} = loginUserDto
         const user = await this.userRepository.findOne({where : {email}})
-        if(!user){
+        if(!user || !user.password){
             throw new UnauthorizedException('Invalid email or password')
         }
-        const isPasswordValid = await bcrypt.compare(password , user.password)
+        const isPasswordValid = await bcrypt.compare(password, user.password)
         if(!isPasswordValid){
             throw new UnauthorizedException('Invalid password')
         }
@@ -47,25 +49,5 @@ export class UserService {
         return result as User 
 
     }
-
-    async findByEmail(email: string): Promise<User | null> {
-  return this.userRepository.findOne({ where: { email } });
-}
-
-    async createFromGoogle(googleUser: {
-    email: string;
-    firstName: string;
-    lastName: string;
-    avatar: string;
-    }): Promise<User> {
-  const user = this.userRepository.create({
-    email: googleUser.email,
-    firstName: googleUser.firstName,
-    lastName: googleUser.lastName,
-    photo: googleUser.avatar,
-    password: null, 
-  });
-    return this.userRepository.save(user);
-}
 
 }

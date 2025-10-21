@@ -40,7 +40,7 @@ export class User {
     password?: string;
 
     @Column({ nullable: true })
-    googleId? : string
+    isEmailConfirmed? : boolean
 
     @Column({
        type: 'enum',

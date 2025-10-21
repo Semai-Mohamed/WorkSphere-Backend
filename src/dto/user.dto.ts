@@ -26,18 +26,18 @@ export class CreateUserDto {
   @IsString()
   mobile: string;
 
-    @ValidateIf(o => o.provider === AuthProvider.LOCAL)
-    @IsString()
-    @IsNotEmpty()
-    @MinLength(8, { message: 'Password must be at least 8 characters long' })
-    password?: string;
+  @ValidateIf(o => o.provider === AuthProvider.LOCAL)
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(8, { message: 'Password must be at least 8 characters long' })
+  password?: string;
 
-    @IsEnum(AuthProvider)
-    @IsNotEmpty()
-    provider: AuthProvider;
+  @IsEnum(AuthProvider)
+  @IsNotEmpty()
+  provider: AuthProvider;
 
   @IsOptional()
-  googleId?: string;
+  isEmailConfirmed?: boolean;
 
   @IsEnum([UserRole.CLIENT, UserRole.FREELANCER], { message: 'Role must be one of the allowed values' })
   role?: UserRole;

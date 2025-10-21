@@ -8,13 +8,16 @@ import { UserService } from '../user/user.service';
 import { CreateUserDto, LoginUserDto } from '../dto/user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../user/user.entity';
+import { JwtStrategy } from './strategies/jwt.strategy';
+import { GoogleStrategy } from './strategies/google.strategy';
 
 
 @Injectable()
 export class AuthService {
     constructor(
         private userService : UserService,
-        private jwtService : JwtService
+        private jwtStrategy : JwtStrategy,
+        private googleStrategy : GoogleStrategy
 
     ){}
     async signUP(createUserDto : CreateUserDto) : Promise<User>{
@@ -32,8 +35,13 @@ export class AuthService {
         }
         const { password : _, ...payload } = user
         return {
-            access_token : await this.jwtService.signAsync(payload)
+            access_token :await this.jwtStrategy.generateJwt(payload)
         }
+    }
+
+    async googleSignIn(){
+        
+
     }
 
 }
