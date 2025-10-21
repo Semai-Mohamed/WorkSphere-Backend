@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 import { Message } from './message.entity';
 import { User } from 'src/user/user.entity';
 
@@ -7,10 +7,12 @@ export class Conversation {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, { eager: true })
+  @JoinColumn()
+  @ManyToOne(() => User,)
   creator: User;
-
-  @ManyToOne(() => User, { eager: true })
+  
+  @JoinColumn()
+  @ManyToOne(() => User, )
   participant: User;
 
   @OneToMany(() => Message, message => message.conversation)

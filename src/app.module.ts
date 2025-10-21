@@ -19,6 +19,8 @@ import { Notification } from './notification/notification.entity';
 import { Conversation } from './conversation/entity/conversation.entity';
 import { Message } from './conversation/entity/message.entity';
 import { Offre } from './offer/offer.entity';
+import { PortfolioModule } from './portfolio/portfolio.module';
+import { Portfolio } from './portfolio/portfolio.entity';
 
 @Module({
   imports: [
@@ -30,7 +32,7 @@ import { Offre } from './offer/offer.entity';
       username: 'postgres',
       password: 'postgres',
       database: 'postgres',
-      entities: [User,Project,Notification,Conversation,Message,Offre],
+      entities: [User,Project,Notification,Conversation,Message,Offre,Portfolio],
       synchronize: true,
     }),
     UserModule,
@@ -40,7 +42,8 @@ import { Offre } from './offer/offer.entity';
     ConversationModule,
     NotificationModule,
     ProjectModule,
-    OfferModule
+    OfferModule,
+    PortfolioModule
   ],
   controllers: [AppController],
   providers: [AppService],

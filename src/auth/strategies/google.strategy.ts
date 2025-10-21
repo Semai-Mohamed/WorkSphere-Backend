@@ -20,8 +20,11 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
 
   async validate(
     accessToken: string,
-    profile: any,
-    done: VerifyCallback,
+  refreshToken: string,
+  profile: any,
+  done: VerifyCallback,
   ): Promise<any> {
-    await this.googleService.createFromGoogle(profile,done,accessToken)}
+  await this.googleService.createFromGoogle(profile,done)
+}
+
 }

@@ -1,6 +1,7 @@
 
 import { SetMetadata } from '@nestjs/common';
-import { UserRole } from 'src/user/user.entity';
+import { UserRole } from 'src/dto/user.dto';
+
 
 export const IS_PUBLIC_KEY = 'isPublic';
 export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);

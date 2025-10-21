@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Injectable } from "node_modules/@nestjs/common";
-import { CreateUserDto } from "src/dto/user.dto";
+import { CreateUserDto, UserRole } from "src/dto/user.dto";
 import { AbilityBuilder,   AbilityTuple,   createMongoAbility,  ExtractSubjectType,  InferSubjects, MongoAbility, MongoQuery } from '@casl/ability';
-import { User, UserRole } from "src/user/user.entity";
+import { User } from "src/user/user.entity";
 import { Project } from "src/project/project.entity";
 import { Offre } from "src/offer/offer.entity";
 import { Message } from "src/conversation/entity/message.entity";

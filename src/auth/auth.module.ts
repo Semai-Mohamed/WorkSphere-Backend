@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UserModule } from '../user/user.module';
@@ -9,10 +9,12 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from 'node_modules/@nestjs/core';
 import { AuthGuard } from './auth.guard';
+import { JwtStrategy } from './strategies/jwt.strategy';
+import { GoogleStrategy } from './strategies/google.strategy';
 
 @Module({
   imports : [
-    UserModule,
+    forwardRef(() =>UserModule),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -23,12 +25,13 @@ import { AuthGuard } from './auth.guard';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService,
+  providers: [AuthService,JwtStrategy,GoogleStrategy,
     {
       provide : APP_GUARD,
       useClass : AuthGuard
     },
     
-  ]
+  ],
+  exports : [JwtStrategy,GoogleStrategy]
 })
 export class AuthModule {}

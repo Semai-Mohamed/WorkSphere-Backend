@@ -1,10 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { IsEmail, IsNotEmpty, IsOptional, MinLength, IsEnum, Matches, IsNumber, IsString, ValidateIf,  } from 'class-validator';
-import { UserRole } from '../user/user.entity';
 
 export enum AuthProvider {
     LOCAL = 'local',
     GOOGLE = 'google'
+}
+
+export enum UserRole {
+  ADMIN = 'admin',
+  CLIENT= 'client',
+  FREELANCER = 'freelancer',
 }
 export class CreateUserDto {
   @IsNotEmpty()
@@ -22,10 +27,6 @@ export class CreateUserDto {
   @IsEmail({}, { message: 'Email must be valid' })
   email: string;
 
-  @IsNotEmpty({ message: 'Mobile number is required' })
-  @IsString()
-  mobile: string;
-
   @ValidateIf(o => o.provider === AuthProvider.LOCAL)
   @IsString()
   @IsNotEmpty()
@@ -42,11 +43,6 @@ export class CreateUserDto {
   @IsEnum([UserRole.CLIENT, UserRole.FREELANCER], { message: 'Role must be one of the allowed values' })
   role?: UserRole;
 
-  @IsOptional()
-  photo?: string;
-
-  @IsOptional()
-  description?: string;
 }
 
 export class LoginUserDto {

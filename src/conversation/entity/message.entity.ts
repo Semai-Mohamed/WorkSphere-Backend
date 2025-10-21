@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, JoinColumn } from 'typeorm';
 import { Conversation } from './conversation.entity';
 import { User } from 'src/user/user.entity';
 
@@ -10,12 +10,15 @@ export class Message {
   @Column({ type: 'text' })
   content: string;
 
-  @ManyToOne(() => User, { eager: true })
+  @JoinColumn()
+  @ManyToOne(() => User, )
   creator: User;
-
-  @ManyToOne(() => User, { eager: true })
+  
+  @JoinColumn()
+  @ManyToOne(() => User, )
   participant: User;
-
+  
+  @JoinColumn()
   @ManyToOne(() => Conversation, conversation => conversation.messages)
   conversation: Conversation;
 

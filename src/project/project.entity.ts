@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from 'src/user/user.entity';
 
 @Entity()
@@ -18,15 +18,16 @@ export class Project {
   @Column({ type: 'varchar', length: 255,})
   photo: string;
 
-  @Column({ type: 'array', length: 100, })
+  @Column('text', { array: true })
   category: string[];
 
-  @Column({ type: 'array', })
+  @Column('text', { array: true })
   technologies: string[];
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
-
-  @ManyToOne(() => User, user => user.projects, { eager: true, onDelete: 'CASCADE' })
+  
+  @JoinColumn()
+  @ManyToOne(() => User, user => user.projects, {  onDelete: 'CASCADE' })
   user: User;
 }

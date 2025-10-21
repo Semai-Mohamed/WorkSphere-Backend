@@ -39,9 +39,18 @@ export class AuthService {
         }
     }
 
-    async googleSignIn(){
-        
-
+    async googleSignIn(user: any): Promise<{ user: User; access_token: string }> {
+    if (!user) {
+        throw new BadRequestException('No user from google');
     }
+
+    const { password: _, ...payload } = user;
+    const jwt = await this.jwtStrategy.generateJwt(payload);
+
+    return {
+        user,
+        access_token: jwt
+    };
+}
 
 }

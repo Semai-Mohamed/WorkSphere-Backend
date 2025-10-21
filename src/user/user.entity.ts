@@ -1,16 +1,13 @@
 import { Conversation } from "src/conversation/entity/conversation.entity";
 import { Message } from "src/conversation/entity/message.entity";
-import { AuthProvider } from "src/dto/user.dto";
+import { AuthProvider, UserRole } from "src/dto/user.dto";
 import { Notification } from "src/notification/notification.entity";
 import { Offre } from "src/offer/offer.entity";
+import { Portfolio } from "src/portfolio/portfolio.entity";
 import { Project } from "src/project/project.entity";
-import { Column, CreateDateColumn, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
-export enum UserRole {
-  ADMIN = 'admin',
-  CLIENT= 'client',
-  FREELANCER = 'freelancer',
-}
+
 
 @Entity()
 export class User {
@@ -25,9 +22,6 @@ export class User {
 
     @Column()
     email : string
-
-    @Column()
-    mobile : string
 
     @Column({
         type: 'enum',
@@ -45,27 +39,25 @@ export class User {
     @Column({
        type: 'enum',
        enum: UserRole,
+      default: UserRole.CLIENT
        })
     role: UserRole;
-
-    @Column({ nullable: true })
-    photo? : string
-    
-    @Column({ nullable: true })
-    description? : string
 
     @CreateDateColumn()
     createdAt: Date;
 
     @UpdateDateColumn()
     updatedAt: Date;
+    
+    @JoinColumn()
+    @OneToOne(() => Portfolio, (portfolio) => portfolio.user, { onDelete: 'CASCADE' ,eager : true})
+    portfolio: Portfolio;
 
-    @OneToMany(() => Project, project => project.user)
+    @OneToMany(() => Project, project => project.user,{ eager: true })
     projects: Project[];
      
     @OneToMany(() => Notification, notification => notification.user)
     notifications: Notification[];
-
 
     @OneToMany(() => Conversation, conversation => conversation.creator)
     createdConversations: Conversation[];
