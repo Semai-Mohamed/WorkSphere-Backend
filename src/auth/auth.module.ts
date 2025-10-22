@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
@@ -11,10 +12,22 @@ import { APP_GUARD } from 'node_modules/@nestjs/core';
 import { AuthGuard } from './auth.guard';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { GoogleStrategy } from './strategies/google.strategy';
-
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import Redis from 'ioredis';
 @Module({
   imports : [
     forwardRef(() =>UserModule),
+    // نستحق هذي فل web socket
+    ClientsModule.register([
+      {
+        name: 'Client_REDIS_SERVICE', 
+        transport: Transport.REDIS,
+        options: {
+          host: 'localhost',
+          port: 6379,
+        },
+      },
+    ]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -29,6 +42,15 @@ import { GoogleStrategy } from './strategies/google.strategy';
     {
       provide : APP_GUARD,
       useClass : AuthGuard
+    },
+     {
+      provide: 'REDIS_CLIENT',
+      useFactory: () => {
+        return new Redis({
+          host: 'localhost',
+          port: 6379,
+        });
+      },
     },
     
   ],
