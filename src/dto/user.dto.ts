@@ -12,8 +12,7 @@ export enum UserRole {
   FREELANCER = 'freelancer',
 }
 export class CreateUserDto {
-  @IsNotEmpty()
-  @IsNumber()
+  
   id : number
 
   @IsNotEmpty({ message: 'First name is required' } )
@@ -27,14 +26,14 @@ export class CreateUserDto {
   @IsEmail({}, { message: 'Email must be valid' })
   email:string 
 
-  @ValidateIf(o => o.provider === AuthProvider.LOCAL)
-  @IsString()
-  @MinLength(8, { message: 'Password must be at least 8 characters long' })
+  @IsOptional()
+  @IsNotEmpty({ message: 'Password cannot be empty' })
+  @MinLength(8, { message: 'Password must be at least 8 characters' })
+  @Matches(/(?=.*[A-Z])/, { message: 'Password must contain at least one uppercase letter' })
+  @Matches(/(?=.*[0-9])/, { message: 'Password must contain at least one number' })
   password?: string;
 
-  @IsEnum(AuthProvider)
-  @IsNotEmpty()
-  provider: AuthProvider;
+  
 
   @IsOptional()
   isEmailConfirmed?: boolean;

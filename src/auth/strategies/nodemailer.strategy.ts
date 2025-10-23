@@ -10,10 +10,10 @@ export class NodeMailderStrategy {
     async sendResetEmail({email}: EmailCheckDto, link: string) {
     const transporter = nodemailer.createTransport({
       host: this.configService.get<string>("HOST"), 
-      port: 587, // this without using ssl just with smtp protocol 
+      port: 587, 
       secure: false, 
       auth: {
-        user: this.configService.get<string>("Email"), 
+        user: this.configService.get<string>("EMAIL"), 
         pass: this.configService.get<string>("APP_PASSWORD"),
       },
     });
@@ -27,7 +27,7 @@ export class NodeMailderStrategy {
              <p>This link will expire in 15 minutes.</p>`,
     })}
     catch(err: any){
-        throw new BadGatewayException("something get wrong",err)
+        throw new BadGatewayException(err)
     }
   }
   

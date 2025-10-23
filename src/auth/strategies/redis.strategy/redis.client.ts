@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
@@ -15,9 +16,9 @@ import { ConfigService } from 'node_modules/@nestjs/config';
 
 @Injectable()
 export class RedisClient {
-  constructor(
-    @InjectRepository(User)
+  constructor( 
     private readonly configService :  ConfigService,
+    @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     @Inject('REDIS_CLIENT') private readonly redisClient: Redis,
     private readonly nodeMailderStrategy : NodeMailderStrategy,
@@ -29,9 +30,8 @@ export class RedisClient {
     if (!user) throw new UnauthorizedException('User not found')
 
     const token = crypto.randomBytes(32).toString('hex');
-
+    console.log(`reset:${user.id}`)
     await this.redisClient.set(`reset:${user.id}`, token, 'EX', 900)
-
     const link = `${this.configService.get<string>('FrontendHost')}auth/reset-password?token=${token}&id=${user.id}`
     await this.nodeMailderStrategy.sendResetEmail({email},link)
     return { message: 'Password reset email sent successfully' };
@@ -46,4 +46,10 @@ export class RedisClient {
     }
     return { message: 'Password reset successfully' };
   }
+
+  async logout(token: string) {
+      const decoded  = await this.jwtStrategy.verifyJwt(token);
+      const ttl = decoded.exp - Math.floor(Date.now() / 1000); 
+      await this.redisClient.set(`revoked:${token}`, 'revoked', 'EX', ttl);
+}
 }

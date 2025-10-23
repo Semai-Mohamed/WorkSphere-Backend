@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
  
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { CreateUserDto, LoginUserDto } from '../dto/user.dto';
 import { JwtService } from '@nestjs/jwt';
@@ -60,6 +60,13 @@ export class AuthService {
     }
     async resetPassword(userId : any, {newPassword} : PasswordCheckDto){
        return await this.redisClient.resetPassword(userId,{newPassword})
+    }
+
+    async logOut (token? : string){
+        if(!token){
+            throw new UnauthorizedException()
+        }
+        return await this.redisClient.logout(token)
     }
 
 }

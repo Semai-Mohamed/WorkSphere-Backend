@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, UseGuards, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto, LoginUserDto } from '../dto/user.dto';
 import type { EmailCheckDto, PasswordCheckDto, RequestWithUser } from 'src/dto/auth.dto';
@@ -18,14 +18,14 @@ export class AuthController {
     @Public()
     @HttpCode(HttpStatus.CREATED)
     @Post('signUp')
-    signUp(@Body(ValidationPipe) signUpDto : CreateUserDto ){
+    signUp(@Body() signUpDto : CreateUserDto ){
       return this.authService.signUP(signUpDto)
     }
 
     @Public()
     @HttpCode(HttpStatus.ACCEPTED)
     @Post('signIn')
-    signIn(@Body(ValidationPipe) signInDto : LoginUserDto){
+    signIn(@Body() signInDto : LoginUserDto){
       return this.authService.signIn(signInDto)
     }
 
@@ -58,6 +58,14 @@ export class AuthController {
       const userId = req['userId']
       return this.authService.resetPassword(userId,{newPassword})
     }
+
+    @Post('logout')
+    @HttpCode(HttpStatus.OK)
+    async logout(@Req() req: Request) {
+      const token = req.headers.authorization?.split(' ')[1];
+      await this.authService.logOut(token);
+      return { message: 'Logged out successfully' };
+}
 
     @Get('profile')
     getProfile(@Req() req : RequestWithUser){

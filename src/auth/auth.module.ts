@@ -14,8 +14,14 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import Redis from 'ioredis';
+import { RedisClient } from './strategies/redis.strategy/redis.client';
+import { RedisGuard } from './strategies/redis.strategy/redis.guard';
+import { TypeOrmModule } from 'node_modules/@nestjs/typeorm';
+import { User } from 'src/user/user.entity';
+import { NodeMailderStrategy } from './strategies/nodemailer.strategy';
 @Module({
   imports : [
+    TypeOrmModule.forFeature([User]),
     forwardRef(() =>UserModule),
     // نستحق هذي فل web socket
     ClientsModule.register([
@@ -36,9 +42,10 @@ import Redis from 'ioredis';
         signOptions: { expiresIn: '1h' }, 
       }),
     }),
+    
   ],
   controllers: [AuthController],
-  providers: [AuthService,JwtStrategy,GoogleStrategy,
+  providers: [AuthService,JwtStrategy,GoogleStrategy,RedisClient,RedisGuard,NodeMailderStrategy,
     {
       provide : APP_GUARD,
       useClass : AuthGuard
@@ -54,6 +61,6 @@ import Redis from 'ioredis';
     },
     
   ],
-  exports : [JwtStrategy,GoogleStrategy]
+  exports : [JwtStrategy,GoogleStrategy,]
 })
 export class AuthModule {}

@@ -33,7 +33,7 @@ export class User {
     @Column({ nullable: true })
     password?: string;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true ,default : false})
     isEmailConfirmed? : boolean
 
     @Column({
