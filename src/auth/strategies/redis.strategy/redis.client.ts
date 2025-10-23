@@ -11,7 +11,7 @@ import { Redis } from 'ioredis';
 import { User } from 'src/user/user.entity';
 import { NodeMailderStrategy } from '../nodemailer.strategy';
 import { EmailCheckDto, PasswordCheckDto } from 'src/dto/auth.dto';
-import { JwtStrategy } from '../jwt.strategy';
+import { JwtStrategy } from '../token.strategy/jwt.strategy';
 import { ConfigService } from 'node_modules/@nestjs/config';
 
 @Injectable()
@@ -52,4 +52,5 @@ export class RedisClient {
       const ttl = decoded.exp - Math.floor(Date.now() / 1000); 
       await this.redisClient.set(`revoked:${token}`, 'revoked', 'EX', ttl);
 }
+
 }

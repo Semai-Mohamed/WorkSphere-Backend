@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { BadGatewayException, BadRequestException, CanActivate, ExecutionContext, Inject, Injectable, UnauthorizedException } from "node_modules/@nestjs/common";
 import { Request } from "node_modules/@types/express";
-import { JwtStrategy } from "../jwt.strategy";
+import { JwtStrategy } from "../token.strategy/jwt.strategy";
 import Redis from "node_modules/ioredis/built";
 
 @Injectable()

@@ -44,6 +44,9 @@ export class CreateUserDto {
 }
 
 export class LoginUserDto {
+    
+ 
+
     @IsEmail({}, { message: 'Email must be valid' })
     email : string
 

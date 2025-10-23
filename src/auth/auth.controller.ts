@@ -1,13 +1,16 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto, LoginUserDto } from '../dto/user.dto';
 import type { EmailCheckDto, PasswordCheckDto, RequestWithUser } from 'src/dto/auth.dto';
 import { Public } from './auth.metadata';
 import { AuthGuard } from 'node_modules/@nestjs/passport';
-import type { Request } from 'node_modules/@types/express';
+import type { Request, Response } from 'node_modules/@types/express';
 import { RedisGuard } from './strategies/redis.strategy/redis.guard';
+import { Cookies } from './strategies/token.strategy/cookies.decorator';
 
 
 @Controller('auth')
@@ -25,8 +28,8 @@ export class AuthController {
     @Public()
     @HttpCode(HttpStatus.ACCEPTED)
     @Post('signIn')
-    signIn(@Body() signInDto : LoginUserDto){
-      return this.authService.signIn(signInDto)
+    signIn(@Body() signInDto : LoginUserDto, @Res({ passthrough: true }) res : Response){
+      return this.authService.signIn(signInDto,res)
     }
 
     @Public()
@@ -39,8 +42,8 @@ export class AuthController {
     @Public()
     @Get('google/callback')
     @UseGuards(AuthGuard('google'))
-   async googleAuthRedirect(@Req() req : Request) {
-    return this.authService.googleSignIn(req.user);
+   async googleAuthRedirect(@Req() req : Request,@Res({ passthrough: true }) res : Response) {
+    return this.authService.googleSignIn(res,req.user);
     }
 
     @Public()
@@ -58,6 +61,15 @@ export class AuthController {
       const userId = req['userId']
       return this.authService.resetPassword(userId,{newPassword})
     }
+
+    @HttpCode(HttpStatus.OK)
+    @Post('refresh')
+    async refresh(@Req() req: RequestWithUser, @Cookies('accessToken') accessToken: string,@Res({ passthrough: true }) res : Response){
+    
+      return  await this.authService.refreshAccessToken(req,accessToken,res)
+      
+    }
+
 
     @Post('logout')
     @HttpCode(HttpStatus.OK)

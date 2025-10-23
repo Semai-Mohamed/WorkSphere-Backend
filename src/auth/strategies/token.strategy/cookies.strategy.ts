@@ -12,7 +12,7 @@ export class CookiesStrategy {
             httpOnly : true,
             secure : true,
             sameSite : 'strict',
-            maxAge : 3600
+            maxAge : 3600 * 1000
     })}
 
     setRefreshToken(res : Response,refreshToken:string | undefined){
@@ -23,8 +23,7 @@ export class CookiesStrategy {
             httpOnly : true,
             secure : true,
             sameSite : 'strict',
-            maxAge : 3600 * 24 * 7
+            maxAge : 3600 * 24 * 7 * 1000
         })}
-    
 }
     

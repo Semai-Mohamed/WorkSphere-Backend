@@ -1,18 +1,23 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
  
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { CreateUserDto, LoginUserDto } from '../dto/user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../user/user.entity';
-import { JwtStrategy } from './strategies/jwt.strategy';
+import { JwtStrategy } from './strategies/token.strategy/jwt.strategy';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { RedisClient } from './strategies/redis.strategy/redis.client';
-import { EmailCheckDto, PasswordCheckDto } from 'src/dto/auth.dto';
+import { EmailCheckDto, PasswordCheckDto, RequestWithUser } from 'src/dto/auth.dto';
+import Redis from 'node_modules/ioredis/built';
+import { randomBytes } from 'crypto';
+import * as bcrypt from 'bcrypt';
+import { CookiesStrategy } from './strategies/token.strategy/cookies.strategy';
+import { Response } from 'node_modules/@types/express';
+
 
 
 @Injectable()
@@ -20,9 +25,11 @@ export class AuthService {
     constructor(
         private userService : UserService,
         private jwtStrategy : JwtStrategy,
-        private redisClient : RedisClient
-        
+        private redisClient : RedisClient,
+        private cookiesStrategy : CookiesStrategy,
+        @Inject('REDIS_CLIENT') private readonly redis: Redis,
     ){}
+
     async signUP(createUserDto : CreateUserDto) : Promise<User>{
         const user = await this.userService.signUp(createUserDto)
         if(!user) {
@@ -31,29 +38,35 @@ export class AuthService {
         return user
     }
 
-    async signIn(loginUserDto : LoginUserDto): Promise<{ access_token: string }>{
+
+    async signIn(loginUserDto : LoginUserDto, res : Response): Promise<{ message : string}>{
         const user = await this.userService.signIn(loginUserDto)
         if(!user){
             throw new BadRequestException('User login failed')
         }
         const { password : _, ...payload } = user
-        return {
-            access_token :await this.jwtStrategy.generateJwt(payload)
-        }
+        const accessToken = await this.jwtStrategy.generateJwt(payload)
+        const refreshToken = randomBytes(64).toString('hex');
+        const hashedToken = await bcrypt.hash(refreshToken, 10);      
+        await this.redis.set(`refresh:${user.id}`, hashedToken, 'EX', 7 * 24 * 60 * 60)
+       
+        this.cookiesStrategy.setAccessToken(res ,accessToken)
+       
+        this.cookiesStrategy.setRefreshToken(res,refreshToken)
+        return { message: 'Login successful' };
     }
 
-    async googleSignIn(user: any): Promise<{ user: User; access_token: string }> {
+
+    async googleSignIn(res: Response,user: any): Promise<{ message: 'Login successful' }> {
     if (!user) {
         throw new BadRequestException('No user from google');
     }
 
     const { password: _, ...payload } = user;
     const jwt = await this.jwtStrategy.generateJwt(payload);
+    this.cookiesStrategy.setAccessToken(res ,jwt)
+    return { message: 'Login successful' };
 
-    return {
-        user,
-        access_token: jwt
-    };
 }
     async requestPasswordReset({email} : EmailCheckDto){
       return await this.redisClient.requestPasswordReset({email})
@@ -68,5 +81,21 @@ export class AuthService {
         }
         return await this.redisClient.logout(token)
     }
+
+    async refreshAccessToken(req : RequestWithUser,receivedRefreshToken : string,res : Response){
+        const {userId} = req['user']
+        if(!userId){
+            throw new UnauthorizedException()
+        }
+        const storedHashed = await this.redis.get(`refresh:${userId}`)
+        if(!storedHashed){
+            throw new BadRequestException("Something thing get wrong")
+        }
+        const isValid = await bcrypt.compare(receivedRefreshToken, storedHashed);
+        if (!isValid) throw new UnauthorizedException();
+        const newAccessToken = await this.jwtStrategy.generateJwt(req['user'],'1h')
+        this.cookiesStrategy.setAccessToken(res,newAccessToken)
+        return { message: 'Access token updated' };
+     }
 
 }
