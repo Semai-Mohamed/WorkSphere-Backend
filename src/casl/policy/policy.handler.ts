@@ -1,5 +1,4 @@
-import { Project } from "src/project/project.entity";
-import { Action } from "../action";
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { AppAbility } from "../casl-ability.factory/casl-ability.factory";
 interface IPolicyHandler {
     handle(ability : AppAbility) : boolean
@@ -9,7 +8,11 @@ export type PolicyHandler = IPolicyHandler | PolicyHandlerCallback
 
 
 export class ReadArticlePolicyHandler implements IPolicyHandler {
+  constructor(
+    private readonly action:any,
+    private readonly subject:any,
+  ){}
   handle(ability: AppAbility) {
-    return ability.can(Action.Update, Project);
+    return ability.can(this.action, this.subject);
   }
 }
