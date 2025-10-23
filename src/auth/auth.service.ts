@@ -83,19 +83,34 @@ export class AuthService {
     }
 
     async refreshAccessToken(req : RequestWithUser,receivedRefreshToken : string,res : Response){
-        const {userId} = req['user']
-        if(!userId){
+        const {id} = req['user']
+        
+        if(!id){
             throw new UnauthorizedException()
         }
-        const storedHashed = await this.redis.get(`refresh:${userId}`)
+        const storedHashed = await this.redis.get(`refresh:${id}`)
         if(!storedHashed){
             throw new BadRequestException("Something thing get wrong")
         }
         const isValid = await bcrypt.compare(receivedRefreshToken, storedHashed);
         if (!isValid) throw new UnauthorizedException();
-        const newAccessToken = await this.jwtStrategy.generateJwt(req['user'],'1h')
+        const {exp , ...payload} = req['user']
+        const newPayload = {
+         ...payload,
+         iat: Math.floor(Date.now() / 1000), 
+         jti: crypto.randomUUID(), 
+        };
+        const newAccessToken = await this.jwtStrategy.generateJwt(newPayload,'1h')
         this.cookiesStrategy.setAccessToken(res,newAccessToken)
         return { message: 'Access token updated' };
      }
 
 }
+
+/*
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiZmlyc3ROYW1lIjoibW9oYW1tZWQiLCJsYXN0TmFtZSI6IlNFTUFJIiwiZW1haWwiOiJtX3NlbWFpQGVzdGluLmR6IiwicHJvdmlkZXIiOiJnb29nbGUiLCJpc0VtYWlsQ29uZmlybWVkIjp0cnVlLCJyb2xlIjoiY2xpZW50IiwiY3JlYXRlZEF0IjoiMjAyNS0xMC0yMVQyMjo0NDowNC4wNDdaIiwidXBkYXRlZEF0IjoiMjAyNS0xMC0yM1QwMTo1MzowNC4xMDZaIiwicG9ydGZvbGlvIjpudWxsLCJwcm9qZWN0cyI6W10sImNyZWF0ZWRPZmZyZXMiOltdLCJlbnJvbGxlZE9mZnJlcyI6W10sImlhdCI6MTc2MTI0OTg4OCwiZXhwIjoxNzYxMjUzNDg4fQ.IS1gTqPD8nW3LhdmuJN63M2G83_FROiskKaxVaJr6tQ
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiZmlyc3ROYW1lIjoibW9oYW1tZWQiLCJsYXN0TmFtZSI6IlNFTUFJIiwiZW1haWwiOiJtX3NlbWFpQGVzdGluLmR6IiwicHJvdmlkZXIiOiJnb29nbGUiLCJpc0VtYWlsQ29uZmlybWVkIjp0cnVlLCJyb2xlIjoiY2xpZW50IiwiY3JlYXRlZEF0IjoiMjAyNS0xMC0yMVQyMjo0NDowNC4wNDdaIiwidXBkYXRlZEF0IjoiMjAyNS0xMC0yM1QwMTo1MzowNC4xMDZaIiwicG9ydGZvbGlvIjpudWxsLCJwcm9qZWN0cyI6W10sImNyZWF0ZWRPZmZyZXMiOltdLCJlbnJvbGxlZE9mZnJlcyI6W10sImlhdCI6MTc2MTI0OTg4OCwiZXhwIjoxNzYxMjUzNDg4fQ.IS1gTqPD8nW3LhdmuJN63M2G83_FROiskKaxVaJ
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiZmlyc3ROYW1lIjoibW9oYW1tZWQiLCJsYXN0TmFtZSI6IlNFTUFJIiwiZW1haWwiOiJtX3NlbWFpQGVzdGluLmR6IiwicHJvdmlkZXIiOiJnb29nbGUiLCJpc0VtYWlsQ29uZmlybWVkIjp0cnVlLCJyb2xlIjoiY2xpZW50IiwiY3JlYXRlZEF0IjoiMjAyNS0xMC0yMVQyMjo0NDowNC4wNDdaIiwidXBkYXRlZEF0IjoiMjAyNS0xMC0yM1QwMTo1MzowNC4xMDZaIiwicG9ydGZvbGlvIjpudWxsLCJwcm9qZWN0cyI6W10sImNyZWF0ZWRPZmZyZXMiOltdLCJlbnJvbGxlZE9mZnJlcyI6W10sImlhdCI6MTc2MTI0OTg4OCwiZXhwIjoxNzYxMjUzNDg4fQ.IS1gTqPD8nW3LhdmuJN63M2G83_FROiskKaxVaJr6tQ
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiZmlyc3ROYW1lIjoibW9oYW1tZWQiLCJsYXN0TmFtZSI6IlNFTUFJIiwiZW1haWwiOiJtX3NlbWFpQGVzdGluLmR6IiwicHJvdmlkZXIiOiJnb29nbGUiLCJpc0VtYWlsQ29uZmlybWVkIjp0cnVlLCJyb2xlIjoiY2xpZW50IiwiY3JlYXRlZEF0IjoiMjAyNS0xMC0yMVQyMjo0NDowNC4wNDdaIiwidXBkYXRlZEF0IjoiMjAyNS0xMC0yM1QwMTo1MzowNC4xMDZaIiwicG9ydGZvbGlvIjpudWxsLCJwcm9qZWN0cyI6W10sImNyZWF0ZWRPZmZyZXMiOltdLCJlbnJvbGxlZE9mZnJlcyI6W10sImlhdCI6MTc2MTI0OTg4OCwiZXhwIjoxNzYxMjUzNDg4fQ.IS1gTqPD8nW3LhdmuJN63M2G83_FROiskKaxVaJr6tQ
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiZmlyc3ROYW1lIjoibW9oYW1tZWQiLCJsYXN0TmFtZSI6IlNFTUFJIiwiZW1haWwiOiJtX3NlbWFpQGVzdGluLmR6IiwicHJvdmlkZXIiOiJnb29nbGUiLCJpc0VtYWlsQ29uZmlybWVkIjp0cnVlLCJyb2xlIjoiY2xpZW50IiwiY3JlYXRlZEF0IjoiMjAyNS0xMC0yMVQyMjo0NDowNC4wNDdaIiwidXBkYXRlZEF0IjoiMjAyNS0xMC0yM1QwMTo1MzowNC4xMDZaIiwicG9ydGZvbGlvIjpudWxsLCJwcm9qZWN0cyI6W10sImNyZWF0ZWRPZmZyZXMiOltdLCJlbnJvbGxlZE9mZnJlcyI6W10sImlhdCI6MTc2MTI1MDQwOCwiZXhwIjoxNzYxMjU0MDA4fQ.OJjUkDIZO-7wE1gaNUdHx4jHLPuvplmRxGNTzJZafYg
+*/

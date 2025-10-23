@@ -5,7 +5,6 @@ import { Request } from "node_modules/@types/express";
 export const Cookies = createParamDecorator(
   (cookieName: string, ctx: ExecutionContext) => {
     const request : Request= ctx.switchToHttp().getRequest();
-    // Return single cookie or all cookies
     return cookieName ? request.cookies[cookieName] : request.cookies;
   },
 );

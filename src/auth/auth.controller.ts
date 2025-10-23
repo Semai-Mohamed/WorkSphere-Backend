@@ -61,11 +61,10 @@ export class AuthController {
       const userId = req['userId']
       return this.authService.resetPassword(userId,{newPassword})
     }
-
+    
     @HttpCode(HttpStatus.OK)
     @Post('refresh')
-    async refresh(@Req() req: RequestWithUser, @Cookies('accessToken') accessToken: string,@Res({ passthrough: true }) res : Response){
-    
+    async refresh(@Req() req: RequestWithUser, @Cookies('refreshToken') accessToken: string,@Res({ passthrough: true }) res : Response){
       return  await this.authService.refreshAccessToken(req,accessToken,res)
       
     }
@@ -73,9 +72,8 @@ export class AuthController {
 
     @Post('logout')
     @HttpCode(HttpStatus.OK)
-    async logout(@Req() req: Request) {
-      const token = req.headers.authorization?.split(' ')[1];
-      await this.authService.logOut(token);
+    async logout(@Req() req: Request, @Cookies('accessToken') accessToken : string) {
+      await this.authService.logOut(accessToken);
       return { message: 'Logged out successfully' };
 }
 
