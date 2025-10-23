@@ -1,16 +1,31 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { Transport } from '@nestjs/microservices';
+import { ValidationPipe } from '@nestjs/common';
+import cookieParser from 'cookie-parser';
+import { AllExceptionsFilter } from './filters/filter.exseptions';
+
 async function bootstrap() {
-  const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
-  transport: Transport.REDIS,
-  options: {
-    host: 'localhost',
-    port: 6379,
-  },
-});
-  await app.listen();
+  const app = await NestFactory.create(AppModule);
+
+  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalFilters(new AllExceptionsFilter());
+
+  app.use(cookieParser());
+
+  // Attach microservice
+  app.connectMicroservice({
+    transport: Transport.REDIS,
+    options: {
+      host: 'localhost',
+      port: 6379,
+    },
+  });
+
+  await app.startAllMicroservices();
+  await app.listen(3000);
 }
 bootstrap();

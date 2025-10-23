@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
@@ -10,6 +11,8 @@ import { JwtService } from '@nestjs/jwt';
 import { User } from '../user/user.entity';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { GoogleStrategy } from './strategies/google.strategy';
+import { RedisClient } from './strategies/redis.strategy/redis.client';
+import { EmailCheckDto, PasswordCheckDto } from 'src/dto/auth.dto';
 
 
 @Injectable()
@@ -17,8 +20,8 @@ export class AuthService {
     constructor(
         private userService : UserService,
         private jwtStrategy : JwtStrategy,
-        private googleStrategy : GoogleStrategy
-
+        private redisClient : RedisClient
+        
     ){}
     async signUP(createUserDto : CreateUserDto) : Promise<User>{
         const user = await this.userService.signUp(createUserDto)
@@ -52,5 +55,11 @@ export class AuthService {
         access_token: jwt
     };
 }
+    async requestPasswordReset({email} : EmailCheckDto){
+      return await this.redisClient.requestPasswordReset({email})
+    }
+    async resetPassword(userId : any, {newPassword} : PasswordCheckDto){
+       return await this.redisClient.resetPassword(userId,{newPassword})
+    }
 
 }
