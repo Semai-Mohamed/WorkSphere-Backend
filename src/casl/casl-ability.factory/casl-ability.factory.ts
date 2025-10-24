@@ -19,6 +19,7 @@ export class CaslAbilityFactory {
   createForUser(user: CreateUserDto) {
     const { can, cannot, build } = new AbilityBuilder(createMongoAbility);
   can('read', Project);
+  can('read', User);
   can('read', Offre);
   can('read', Portfolio);
   can('read', Conversation, {

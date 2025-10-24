@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { CanActivate, ExecutionContext, Injectable } from "node_modules/@nestjs/common";
+import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from "node_modules/@nestjs/common";
 import { Reflector } from "node_modules/@nestjs/core";
 import { AppAbility, CaslAbilityFactory } from "../casl-ability.factory/casl-ability.factory";
 import { PolicyHandler } from "./policy.handler";
@@ -32,9 +32,13 @@ export class PoliciesGuard implements CanActivate {
     }
 
     private execPolicyHandler(handler : PolicyHandler, ability : AppAbility){
-        if(typeof handler === "function"){
+        if(typeof handler === "function"){ // لازم نزيد getErrorMessage اذا ستحقينها
             return handler(ability)
         }
-        return handler.handle(ability)
+        if(!handler.handle(ability)){
+            throw new ForbiddenException(handler.getErrorMessage())
+        }
+        return true
+        
     }
 }
