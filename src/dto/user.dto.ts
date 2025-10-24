@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { IsEmail, IsNotEmpty, IsOptional, MinLength, IsEnum, Matches, IsNumber, IsString, ValidateIf,  } from 'class-validator';
+import { OmitType, PickType } from '@nestjs/mapped-types';
 
 export enum AuthProvider {
     LOCAL = 'local',
@@ -33,8 +34,6 @@ export class CreateUserDto {
   @Matches(/(?=.*[0-9])/, { message: 'Password must contain at least one number' })
   password?: string;
 
-  
-
   @IsOptional()
   isEmailConfirmed?: boolean;
 
@@ -44,8 +43,6 @@ export class CreateUserDto {
 }
 
 export class LoginUserDto {
-    
- 
 
     @IsEmail({}, { message: 'Email must be valid' })
     email : string
@@ -57,3 +54,4 @@ export class LoginUserDto {
     password: string;
 
 }
+export class UpdateUserDto extends PickType(CreateUserDto,['firstName','lastName',]as const){}

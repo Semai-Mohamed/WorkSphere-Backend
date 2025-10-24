@@ -36,6 +36,8 @@ export class CaslAbilityFactory {
   } as MongoQuery<Message>);
   can('create', Portfolio);
   can('update', Portfolio, { user: { id: user.id } });
+  can('update', User, { id: user.id });
+
 
   cannot('delete', Offre, { status: {$ne: Status.NOTAPPROVED }} as MongoQuery<Offre>);
   cannot('update', Offre, { status: {$ne: Status.NOTAPPROVED }} as MongoQuery<Offre>);

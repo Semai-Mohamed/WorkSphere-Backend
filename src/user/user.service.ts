@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { BadRequestException, ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateUserDto, LoginUserDto } from '../dto/user.dto';
+import { CreateUserDto, LoginUserDto, UpdateUserDto } from '../dto/user.dto';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import * as bcrypt from 'bcrypt';
@@ -59,12 +59,13 @@ export class UserService {
     }
 
 
-    async updateUser(userId : number,dto: any):Promise<User >{
+    async updateUser(userId : number,dto: UpdateUserDto):Promise<User >{
         const user = await this.getUser(userId)
         const updatedUser = await this.userRepository.preload({
+            ...dto,
             role : user.role,
             id : user.id,
-            ...dto
+            
         })
         if (!updatedUser) throw new BadRequestException(`cannot update the user with ${userId} id`)
         return await this.userRepository.save(updatedUser)

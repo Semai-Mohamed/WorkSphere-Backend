@@ -7,6 +7,7 @@ import { PolicyHandler } from "./policy.handler";
 import { CHECK_POLICIES_KEY } from "./policy.metadata";
 import { RequestWithUser } from "src/dto/auth.dto";
 import { IS_PUBLIC_KEY } from "src/auth/auth.metadata";
+
 @Injectable()
 export class PoliciesGuard implements CanActivate {
     constructor (
