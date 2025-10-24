@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { BadGatewayException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from 'node_modules/@nestjs/typeorm';
 import { Portfolio } from './portfolio.entity';
@@ -14,11 +16,8 @@ export class PortfolioService {
         @InjectRepository(User)
         private readonly userRepository : Repository<User>
     ){}
-    async createPortfolio(createPortfolioDto : CreatePortfolioDto):Promise<Portfolio>{
-        const user = await this.userRepository.findOne({
-            where : {id : createPortfolioDto.userId},
-            relations : ['portfolio'],
-        })
+    async createPortfolio(createPortfolioDto : CreatePortfolioDto,userId : any):Promise<Portfolio>{
+        const user = await this.userRepository.findOne({where : {id : userId}})
         if(!user){
             throw new NotFoundException('User not found')
         }
@@ -31,4 +30,26 @@ export class PortfolioService {
         })
         return await this.portfolioRepository.save(portfolio)
     }
+
+    async getUserPortfolio(userId : any){
+       const portfolio = await this.portfolioRepository.findOne({
+        where : {user : {id : userId}},
+        relations : ['user'],
+       })
+       if(!portfolio) throw new NotFoundException('Porfolio not found')
+        return portfolio
+    }
+
+    async updateUserPortfolio(userId : any, dto : CreatePortfolioDto){
+        const portfolio = await this.getUserPortfolio(userId)
+        const updatedPortfolio = await this.portfolioRepository.preload({
+            id : portfolio.id,
+            ...dto
+        })
+        if(!updatedPortfolio){
+            throw new BadGatewayException("cannot update your portfolio")
+        }
+        return await this.portfolioRepository.save(updatedPortfolio)
+    }
+    
 }

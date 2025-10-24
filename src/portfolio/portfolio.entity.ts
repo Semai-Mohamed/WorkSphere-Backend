@@ -6,21 +6,21 @@ export class Portfolio {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => User, (user) => user.portfolio)
+  @OneToOne(() => User, (user) => user.portfolio, { onDelete: 'CASCADE' })
   @JoinColumn()
   user: User;
 
-  @Column({ nullable: true })
-  mobile?: string;
+  @Column()
+  mobile: string;
 
   @Column({ nullable: true })
   photo?: string;
 
-  @Column({ nullable: true })
-  description?: string;
+  @Column()
+  description: string;
 
-  @Column({ nullable: true })
-  location?: string;
+  @Column()
+  location: string;
 
   @Column({ nullable: true })
   portfolioLink?: string; 

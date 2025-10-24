@@ -1,24 +1,20 @@
 import { IsOptional, IsString, IsUrl, IsNumber } from 'class-validator';
 
 export class CreatePortfolioDto {
-  @IsNumber()
-  userId: number;
-
-  @IsOptional()
+  
   @IsString()
-  mobile?: string;
+  mobile: string;
 
   @IsOptional()
   @IsString()
   photo?: string;
 
-  @IsOptional()
   @IsString()
-  description?: string;
+  description: string;
 
-  @IsOptional()
+  
   @IsString()
-  location?: string;
+  location: string;
 
   @IsOptional()
   @IsUrl({}, { message: 'portfolioLink must be a valid URL' })

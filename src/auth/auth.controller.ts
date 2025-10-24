@@ -10,7 +10,7 @@ import { Public } from './auth.metadata';
 import { AuthGuard } from 'node_modules/@nestjs/passport';
 import type { Request, Response } from 'node_modules/@types/express';
 import { RedisGuard } from './strategies/redis.strategy/redis.guard';
-import { Cookies } from './strategies/token.strategy/cookies.decorator';
+import { Cookies } from '../common/cookies.decorator';
 
 
 @Controller('auth')

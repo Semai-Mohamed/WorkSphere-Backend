@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-misused-promises */ 
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { BadRequestException, ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto, LoginUserDto } from '../dto/user.dto';
 import { Repository } from 'typeorm';
@@ -50,6 +52,20 @@ export class UserService {
 
     }
 
-   
+    async getUser(userId : number):Promise<User>{
+      const user = await this.userRepository.findOne({where : {id : userId}})
+      if(!user) throw new NotFoundException(`cant find the user with ${userId}`)
+      return user
+    }
 
+
+    async updateUser(userId : number,dto: any):Promise<User >{
+        const user = await this.getUser(userId)
+        const updatedUser = await this.userRepository.preload({
+            id : user.id,
+            ...dto
+        })
+        if (!updatedUser) throw new BadRequestException(`cannot update the user with ${userId} id`)
+        return await this.userRepository.save(updatedUser)
+    }   
 }
