@@ -18,7 +18,7 @@ export class AuthController {
     constructor(
         private authService : AuthService,
     ){}
-    
+
     @Public()
     @HttpCode(HttpStatus.CREATED)
     @Post('signUp')
@@ -78,8 +78,4 @@ export class AuthController {
       return { message: 'Logged out successfully' };
 }
 
-    @Get('profile')
-    getProfile(@Req() req : RequestWithUser){
-      return req.user
-    }
 }

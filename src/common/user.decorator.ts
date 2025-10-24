@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import { BadGatewayException, createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { RequestWithUser } from 'src/dto/auth.dto';

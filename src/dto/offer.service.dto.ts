@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsNumber, IsArray, IsEnum, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsString, IsNumber, IsArray, IsEnum} from 'class-validator';
 export enum Type {
   FREELANCE_OFFER = 'freelanceOffre',
   CLIENT_OFFER= 'clientOffre',

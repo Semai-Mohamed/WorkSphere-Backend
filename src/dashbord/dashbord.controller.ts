@@ -1,6 +1,6 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { PoliciesGuard } from 'src/casl/policy/policies.guard';
-import { ReadArticlePolicyHandler } from 'src/casl/policy/policy.handler';
+import { WorkSpherPolicyHandler } from 'src/casl/policy/policy.handler';
 import { CheckPolicies } from 'src/casl/policy/policy.metadata';
 import { Project } from 'src/project/project.entity';
 
@@ -8,7 +8,7 @@ import { Project } from 'src/project/project.entity';
 export class DashbordController {
     @Get()
     @UseGuards(PoliciesGuard)
-    @CheckPolicies(new ReadArticlePolicyHandler("read",Project))
+    @CheckPolicies(new WorkSpherPolicyHandler("read",Project))
     findAll(){
         return ""
     }

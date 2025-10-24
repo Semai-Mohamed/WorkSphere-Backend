@@ -6,6 +6,7 @@ import { AppAbility, CaslAbilityFactory } from "../casl-ability.factory/casl-abi
 import { PolicyHandler } from "./policy.handler";
 import { CHECK_POLICIES_KEY } from "./policy.metadata";
 import { RequestWithUser } from "src/dto/auth.dto";
+import { IS_PUBLIC_KEY } from "src/auth/auth.metadata";
 @Injectable()
 export class PoliciesGuard implements CanActivate {
     constructor (
@@ -13,11 +14,15 @@ export class PoliciesGuard implements CanActivate {
         private caslAbilityFactory : CaslAbilityFactory,
     ){}
     canActivate(context: ExecutionContext): boolean {
-        const policyHandler = 
-        this.reflector.get<PolicyHandler[]>(
+        const policyHandler = this.reflector.get<PolicyHandler[]>(
             CHECK_POLICIES_KEY,
             context.getHandler(),
         ) || []
+        const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+                    context.getHandler(),
+                    context.getClass(),
+            ]);
+        if (isPublic) return true
         const {user} : RequestWithUser = context.switchToHttp().getRequest()
         const ability = this.caslAbilityFactory.createForUser(user)
         

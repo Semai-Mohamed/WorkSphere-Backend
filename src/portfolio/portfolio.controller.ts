@@ -28,7 +28,4 @@ export class PortfolioController {
     return this.porfolioService.updateUserPortfolio(userId,dto)
   }
   
-
-
-
 }
