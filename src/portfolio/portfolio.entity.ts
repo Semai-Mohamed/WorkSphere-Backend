@@ -25,7 +25,6 @@ export class Portfolio {
   @Column({ nullable: true })
   portfolioLink?: string; 
   
-
   @CreateDateColumn()
   createdAt: Date;
 

@@ -49,7 +49,7 @@ export class User {
     @UpdateDateColumn()
     updatedAt: Date;
     
-    @JoinColumn()
+
     @OneToOne(() => Portfolio, (portfolio) => portfolio.user, { onDelete: 'CASCADE' ,eager : true})
     portfolio: Portfolio;
 

@@ -1,4 +1,5 @@
-import { IsOptional, IsString, IsUrl, IsNumber } from 'class-validator';
+import { IsOptional, IsString, IsUrl } from 'class-validator';
+import { PickType } from 'node_modules/@nestjs/mapped-types';
 
 export class CreatePortfolioDto {
   
@@ -20,3 +21,5 @@ export class CreatePortfolioDto {
   @IsUrl({}, { message: 'portfolioLink must be a valid URL' })
   portfolioLink?: string;
 }
+export class UpdatePortfolio extends PickType(CreatePortfolioDto, ["mobile","photo","description","portfolioLink","location"] as const) {}
+
