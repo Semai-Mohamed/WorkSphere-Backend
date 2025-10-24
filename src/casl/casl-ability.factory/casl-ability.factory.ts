@@ -9,6 +9,7 @@ import { Offre } from "src/offer/offer.entity";
 import { Message } from "src/conversation/entity/message.entity";
 import { Conversation } from "src/conversation/entity/conversation.entity";
 import { Status } from "src/dto/offer.service.dto";
+import { Portfolio } from "src/portfolio/portfolio.entity";
 
 type Subjects = InferSubjects<typeof Project | typeof User> | 'all '
 export type AppAbility = MongoAbility<AbilityTuple, MongoQuery>;
@@ -19,6 +20,7 @@ export class CaslAbilityFactory {
     const { can, cannot, build } = new AbilityBuilder(createMongoAbility);
   can('read', Project);
   can('read', Offre);
+  can('read', Portfolio);
   can('read', Conversation, {
     $or: [
       { creator: { id: user.id } },
@@ -31,6 +33,9 @@ export class CaslAbilityFactory {
       { participant: { id: user.id } },
     ],
   } as MongoQuery<Message>);
+  can('create', Portfolio);
+  can('update', Portfolio, { user: { id: user.id } });
+
   cannot('delete', Offre, { status: {$ne: Status.NOTAPPROVED }} as MongoQuery<Offre>);
   cannot('update', Offre, { status: {$ne: Status.NOTAPPROVED }} as MongoQuery<Offre>);
   if (user.role === UserRole.ADMIN) {
@@ -47,6 +52,8 @@ export class CaslAbilityFactory {
     can('create', Offre);
     can('update', Offre, { user: { id: user.id } });
     can('delete', Offre, { user: { id: user.id } });
+
+    
   } 
   
   else if (user.role === UserRole.CLIENT) {
@@ -54,7 +61,6 @@ export class CaslAbilityFactory {
     can('update', Offre, { user: { id: user.id } });
     can('delete', Offre, { user: { id: user.id } });
   }
-
 
     return build({
       detectSubjectType: (item) =>

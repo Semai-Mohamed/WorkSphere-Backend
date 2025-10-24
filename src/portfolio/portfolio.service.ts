@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { BadGatewayException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from 'node_modules/@nestjs/typeorm';
 import { Portfolio } from './portfolio.entity';
@@ -16,7 +15,7 @@ export class PortfolioService {
         @InjectRepository(User)
         private readonly userRepository : Repository<User>
     ){}
-    async createPortfolio(createPortfolioDto : CreatePortfolioDto,userId : any):Promise<Portfolio>{
+    async createPortfolio(createPortfolioDto : CreatePortfolioDto,userId : number):Promise<Portfolio>{
         const user = await this.userRepository.findOne({where : {id : userId}})
         if(!user){
             throw new NotFoundException('User not found')
@@ -31,7 +30,7 @@ export class PortfolioService {
         return await this.portfolioRepository.save(portfolio)
     }
 
-    async getUserPortfolio(userId : any){
+    async getUserPortfolio(userId : number){
        const portfolio = await this.portfolioRepository.findOne({
         where : {user : {id : userId}},
         relations : ['user'],
@@ -40,7 +39,7 @@ export class PortfolioService {
         return portfolio
     }
 
-    async updateUserPortfolio(userId : any, dto : CreatePortfolioDto){
+    async updateUserPortfolio(userId : number, dto : any){
         const portfolio = await this.getUserPortfolio(userId)
         const updatedPortfolio = await this.portfolioRepository.preload({
             id : portfolio.id,

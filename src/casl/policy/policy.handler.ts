@@ -7,7 +7,7 @@ type PolicyHandlerCallback = (ability : AppAbility) => boolean
 export type PolicyHandler = IPolicyHandler | PolicyHandlerCallback
 
 
-export class ReadArticlePolicyHandler implements IPolicyHandler {
+export class WorkSpherPolicyHandler implements IPolicyHandler {
   constructor(
     private readonly action:any,
     private readonly subject:any,
