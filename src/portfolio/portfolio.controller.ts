@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { PortfolioService } from './portfolio.service';
 import { CreatePortfolioDto, UpdatePortfolio } from 'src/dto/portfolio.dto';
 import { GetUserId } from 'src/common/user.decorator';
@@ -17,14 +17,14 @@ export class PortfolioController {
   }
 
   @CheckPolicies(new WorkSpherPolicyHandler('read', Portfolio))
-  @Get("")
-  get(@GetUserId() userId : number){
+  @Get(":id")
+  get(@Param("id") userId : number){
     return this.porfolioService.getUserPortfolio(userId)
   }
 
   @CheckPolicies(new WorkSpherPolicyHandler('update',Portfolio))
-  @Patch("update")
-  update(@Body() dto : UpdatePortfolio,@GetUserId() userId : number){
+  @Patch(":id")
+  update(@Body() dto : UpdatePortfolio,@Param("id") userId : number){
     return this.porfolioService.updateUserPortfolio(userId,dto)
   }
   
