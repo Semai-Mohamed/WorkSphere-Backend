@@ -18,13 +18,13 @@ export class UserController {
         return req.user
     }
 
-    @CheckPolicies(new WorkSpherPolicyHandler('read',User))
+    @CheckPolicies('read', User)
     @Get(':userId')
     get(@Param('userId') userId : number){
         return this.userService.getUser(userId)
     }
     
-    @CheckPolicies(new WorkSpherPolicyHandler('update',User))
+    @CheckPolicies('update', User)
     @Patch('update')
     update(@Body() dto : UpdateUserDto , @GetUserId() userId : number){
         return this.userService.updateUser(userId,dto)

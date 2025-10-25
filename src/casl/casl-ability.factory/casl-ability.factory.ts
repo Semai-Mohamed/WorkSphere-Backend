@@ -35,7 +35,7 @@ export class CaslAbilityFactory {
     ],
   } as MongoQuery<Message>);
   can('create', Portfolio);
-  can('update', Portfolio, { user: { id: user.id } });
+  can('update', Portfolio, { 'user.id': user.id } as any);
   can('update', User, { id: user.id });
 
 
@@ -49,12 +49,13 @@ export class CaslAbilityFactory {
   
   else if (user.role === UserRole.FREELANCER) {
     can('create', Project);
-    can('update', Project, { user: { id: user.id } });
-    can('delete', Project, { user: { id: user.id } });
-
+    can('update', Project, { 'user.id': user.id } as any);
+    can('delete', Project, { 'user.id': user.id } as any);
+    console.log(user.id)
     can('create', Offre);
-    can('update', Offre, { user: { id: user.id } });
-    can('delete', Offre, { user: { id: user.id } });
+    can('update', Offre, { 'user.id': user.id } as any);
+    can('delete', Offre, { 'user.id': user.id } as any);
+
 
     
   } 

@@ -1,10 +1,7 @@
 import { IsNotEmpty, IsString, IsArray, } from 'class-validator';
 import { PickType } from '@nestjs/mapped-types';
 export class CreateProjectDto {
-  @IsNotEmpty()
-  @IsString()
-  id : string
-
+  
   @IsNotEmpty()
   @IsString()
   title: string;

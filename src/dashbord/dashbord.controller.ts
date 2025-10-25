@@ -8,7 +8,7 @@ import { Project } from 'src/project/project.entity';
 export class DashbordController {
     @Get()
     @UseGuards(PoliciesGuard)
-    @CheckPolicies(new WorkSpherPolicyHandler("read",Project))
+    @CheckPolicies('read',Project)
     findAll(){
         return ""
     }

@@ -16,7 +16,7 @@ export class UserService {
         private readonly userRepository : Repository<User>
     ){}
     async signUp(createUserDto : CreateUserDto) : Promise<User> {
-        const {password ,email, ...rest} = createUserDto
+        const { id:_ ,password ,email, ...rest} = createUserDto
         if (!password) {
             throw new BadRequestException('Password is required')
         }

@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString,  IsBoolean, IsNumber} from 'class-validator';
 
-export class CreateProjectDto {
+export class CreateNotificationDto {
   @IsNotEmpty()
   @IsNumber()
   id :number

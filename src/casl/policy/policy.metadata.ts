@@ -1,6 +1,6 @@
-import { SetMetadata } from "node_modules/@nestjs/common";
-import { PolicyHandler } from "./policy.handler";
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import { SetMetadata } from '@nestjs/common';
 
-export const CHECK_POLICIES_KEY = 'check_policy';
-export const CheckPolicies = (...handlers: PolicyHandler[]) =>
-  SetMetadata(CHECK_POLICIES_KEY, handlers);
+export const CHECK_ABILITY_KEY = 'check_ability';
+export const CheckPolicies = (action: string, subject: any) =>
+  SetMetadata(CHECK_ABILITY_KEY, { action, subject });

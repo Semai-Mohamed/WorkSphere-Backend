@@ -14,6 +14,7 @@ export class WorkSpherPolicyHandler implements IPolicyHandler {
   constructor(
     private readonly action:any,
     private readonly subject:any,
+    private readonly id?:any
   ){}
   handle(ability: AppAbility) {
     return ability.can(this.action, this.subject);
