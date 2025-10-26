@@ -34,13 +34,13 @@ export class OfferService {
             where : {id : offerId},
             relations : ['user']
         })
-        if(!offer) throw new BadRequestException('Cannot get offer')
+        if(!offer) throw new NotFoundException('Cannot get offer')
         return offer
     }
 
     async updateOffer(offerId : number, dto : UpdateOffreDto) {
         const offer = await this.GetOfferById(offerId)
-        if(!offer) throw new BadRequestException("cannot update your offer")
+        if(!offer) throw new NotFoundException("cannot find your offer")
         const updatedOffer = await this.offerRepository.preload({
             ...dto,
             id : offer.id,
@@ -48,6 +48,11 @@ export class OfferService {
         })
         if(!updatedOffer) throw new BadRequestException("cannot update your offer")
         return await this.offerRepository.save(updatedOffer)
+    }
+
+    async deleteOffer(offerId : number) {
+        const offer = await this.GetOfferById(offerId)
+        await this.offerRepository.remove(offer)
     }
 
 }
