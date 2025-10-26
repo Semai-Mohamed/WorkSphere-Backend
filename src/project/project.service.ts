@@ -55,6 +55,7 @@ export class ProjectService {
 
     async deleteProject(projectId : number): Promise<void> {
         const project = await this.getProjectById(projectId)
+        if(!project) throw new BadRequestException("cannot delete your project")
         await this.projectRepository.remove(project)
     }
 }

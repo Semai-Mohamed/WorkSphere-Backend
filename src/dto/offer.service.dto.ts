@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsString, IsNumber, IsArray, IsEnum} from 'class-validator';
+import { PickType } from 'node_modules/@nestjs/mapped-types';
 export enum Type {
   FREELANCE_OFFER = 'freelanceOffre',
   CLIENT_OFFER= 'clientOffre',
@@ -40,5 +41,15 @@ export class CreateOffreDto {
   @IsEnum(Status)
   status: Status;
 
-  
 }
+
+export class UpdateOffreDto extends PickType(CreateOffreDto, [
+  "service",
+  "description",
+  "price",
+  "type",
+  "category",
+  "technologies",
+  "status",
+] as const) {}
+

@@ -36,7 +36,7 @@ export class Offre {
   status: Status;
 
   @JoinColumn()
-  @ManyToOne(() => User,user => user.createdOffres,{  onDelete: 'CASCADE' })
+  @ManyToOne(() => User,{  onDelete: 'CASCADE' })
   user: User;
 
   @ManyToMany(() => User, user => user.enrolledOffres)

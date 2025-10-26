@@ -3,7 +3,7 @@ import { InjectRepository } from 'node_modules/@nestjs/typeorm';
 import { Offre } from './offer.entity';
 import { Repository } from 'node_modules/typeorm';
 import { User } from 'src/user/user.entity';
-import { CreateOffreDto } from 'src/dto/offer.service.dto';
+import { CreateOffreDto, UpdateOffreDto } from 'src/dto/offer.service.dto';
 
 @Injectable()
 export class OfferService {
@@ -29,4 +29,25 @@ export class OfferService {
         if(!offers) throw new BadRequestException('Cannot get offers')
         return offers
     }
+    async GetOfferById(offerId : number) {
+        const offer = await this.offerRepository.findOne({
+            where : {id : offerId},
+            relations : ['user']
+        })
+        if(!offer) throw new BadRequestException('Cannot get offer')
+        return offer
+    }
+
+    async updateOffer(offerId : number, dto : UpdateOffreDto) {
+        const offer = await this.GetOfferById(offerId)
+        if(!offer) throw new BadRequestException("cannot update your offer")
+        const updatedOffer = await this.offerRepository.preload({
+            ...dto,
+            id : offer.id,
+            
+        })
+        if(!updatedOffer) throw new BadRequestException("cannot update your offer")
+        return await this.offerRepository.save(updatedOffer)
+    }
+
 }

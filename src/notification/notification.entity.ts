@@ -15,7 +15,6 @@ export class Notification {
   @Column({ type: 'varchar', length: 255 })
   purpose: string;
 
-  // Many notifications belong to one user
-  @ManyToOne(() => User, user => user.notifications, { eager: true })
+  @ManyToOne(() => User, { eager: true })
   user: User;
 }
