@@ -58,4 +58,6 @@ export class ProjectService {
         if(!project) throw new BadRequestException("cannot delete your project")
         await this.projectRepository.remove(project)
     }
+
+    
 }

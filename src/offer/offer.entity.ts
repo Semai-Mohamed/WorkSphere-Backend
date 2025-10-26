@@ -51,7 +51,7 @@ export class Offre {
   
   @JoinColumn()
   @OneToOne(() => Conversation , {eager : true})
-  projectConversation = Conversation
+  projectConversation : Conversation
 
 }
  

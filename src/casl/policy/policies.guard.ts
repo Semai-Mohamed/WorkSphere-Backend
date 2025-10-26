@@ -17,7 +17,7 @@ export class PoliciesGuard implements CanActivate {
         private dataSource : DataSource,
     ){}
     async canActivate(context: ExecutionContext) : Promise<boolean> {
-        const { action, subject } = this.reflector.get(CHECK_ABILITY_KEY, context.getHandler()) || {};
+        const { action, subject , fieldName } = this.reflector.get(CHECK_ABILITY_KEY, context.getHandler()) || {};
         if (!action || !subject) return true;
         const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
                     context.getHandler(),
@@ -32,11 +32,15 @@ export class PoliciesGuard implements CanActivate {
         const repository = this.dataSource.getRepository(subject)
         if (subject.name === 'User') {return true}
         const entity =await repository.findOne({ where: { id } ,relations : ['user']}) ? await repository.findOne({ where: { id } ,relations : ['user']}) : subject;
-         if (!ability.can(action, entity)) {           
+        console.log(entity,action)
+        console.log(subject.name)
+        let canAccess :any
+        if(!fieldName) canAccess = ability.can(action, entity)
+        else canAccess = ability.can(action,entity,fieldName )
+         if (!canAccess) {           
            throw new ForbiddenException(`You cannot ${action} this ${subject.name}`);
        }
     
        return true
     }
-
 }

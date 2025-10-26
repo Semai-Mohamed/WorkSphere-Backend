@@ -53,7 +53,7 @@ export class CaslAbilityFactory {
     can('update', Project, { 'user.id': user.id } as any);
     can('delete', Project, { 'user.id': user.id } as any);
     can('create', Offre);
-    can('update', Offre,['enroledUsers'],{ 'type': 'clientOffre' } as any);  
+    can('enrol', Offre,['enroledUsers'],{ 'type': 'clientOffre' } as any);  
     can('update', Offre, { 'user.id': user.id } as any);
     can('delete', Offre, { 'user.id': user.id } as any);
 

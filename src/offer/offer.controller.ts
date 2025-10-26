@@ -1,16 +1,18 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Req } from '@nestjs/common';
 import { OfferService } from './offer.service';
 import { CheckPolicies } from 'src/casl/policy/policy.metadata';
 import { Offre } from './offer.entity';
 import { CreateOffreDto } from 'src/dto/offer.service.dto';
+import type { RequestWithUser } from 'src/dto/auth.dto';
 import { GetUserId } from 'src/common/user.decorator';
+import { userInfo } from 'os';
 
 @Controller('offer')
 export class OfferController {
     constructor(private readonly offerService : OfferService){}
     @CheckPolicies('create', Offre)
     @Post('add')
-    addOffer(@Body() dto : CreateOffreDto,@GetUserId() userId : number){
+    addOffer(@Body() dto : CreateOffreDto,@Req() userId : RequestWithUser){
         return this.offerService.AddOffer(dto,userId)
     }
 
@@ -36,5 +38,11 @@ export class OfferController {
     @Delete(':id')
     deleteOffer(@Param('id') offerId : number){
         return this.offerService.deleteOffer(offerId)
+    }
+
+    @CheckPolicies('enrol',Offre,'enroledUsers')
+    @Patch('enrolled/:id')
+    async enrolUser(@Param("id") offerId : number, @GetUserId() userId : number){
+        return this.offerService.enrolled(userId,offerId)
     }
 }

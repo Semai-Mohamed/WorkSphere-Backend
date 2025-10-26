@@ -11,10 +11,7 @@ export enum Status {
   
 }
 export class CreateOffreDto {
-  @IsNotEmpty()
-  @IsNumber()
-  id : number
-
+ 
   @IsNotEmpty({ message: 'Service name is required' })
   @IsString()
   service: string;
