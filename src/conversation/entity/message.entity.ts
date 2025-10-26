@@ -19,7 +19,7 @@ export class Message {
   participant: User;
   
   @JoinColumn()
-  @ManyToOne(() => Conversation, conversation => conversation.messages)
+  @ManyToOne(() => Conversation, conversation => conversation.messages,{  onDelete: 'CASCADE' })
   conversation: Conversation;
 
   @CreateDateColumn()

@@ -1,4 +1,32 @@
-import { Injectable } from '@nestjs/common';
+import {  BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from 'node_modules/@nestjs/typeorm';
+import { Offre } from './offer.entity';
+import { Repository } from 'node_modules/typeorm';
+import { User } from 'src/user/user.entity';
+import { CreateOffreDto } from 'src/dto/offer.service.dto';
 
 @Injectable()
-export class OfferService {}
+export class OfferService {
+    constructor(
+        @InjectRepository(Offre) private readonly offerRepository : Repository<Offre>,
+        @InjectRepository(User) private readonly userRepository : Repository<User>,
+    ) {}
+
+    async AddOffer(dto : CreateOffreDto, userId : number) {
+       const offer = this.offerRepository.create({
+        ...dto,
+        user : {id : userId}
+       })
+       if(!offer) throw new BadRequestException('Cannot create offer')
+       return await this.offerRepository.save(offer)
+    }
+
+    async GetOffersByUser(userId : number) {
+        const offers = await this.offerRepository.find({
+            where : {user : {id : userId}},
+            relations : ['user']
+        })
+        if(!offers) throw new BadRequestException('Cannot get offers')
+        return offers
+    }
+}

@@ -2,7 +2,6 @@
 import { Body, Controller, Get, Param, Patch, Req } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CheckPolicies } from 'src/casl/policy/policy.metadata';
-import { WorkSpherPolicyHandler } from 'src/casl/policy/policy.handler';
 import { User } from './user.entity';
 import { GetUserId } from 'src/common/user.decorator';
 import type { RequestWithUser } from 'src/dto/auth.dto';

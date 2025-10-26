@@ -28,6 +28,6 @@ export class Project {
   createdAt: Date;
   
   @JoinColumn()
-  @ManyToOne(() => User, user => user.projects, {  onDelete: 'CASCADE' })
+  @ManyToOne(() => User,  {  onDelete: 'CASCADE' })
   user: User;
 }

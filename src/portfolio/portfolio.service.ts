@@ -20,13 +20,13 @@ export class PortfolioService {
         if(!user){
             throw new NotFoundException('User not found')
         }
-    
+        console.log(user.portfolio)
         if(user.portfolio){
             throw new BadRequestException('User already has a portfolio')
         }
         const portfolio = this.portfolioRepository.create({
             ...createPortfolioDto,
-            user,
+            user : {id : userId},
         })
         return await this.portfolioRepository.save(portfolio)
     }

@@ -12,7 +12,7 @@ export class Conversation {
   creator: User;
   
   @JoinColumn()
-  @ManyToOne(() => User, )
+  @ManyToOne(() => User,{  onDelete: 'CASCADE' } )
   participant: User;
 
   @OneToMany(() => Message, message => message.conversation)

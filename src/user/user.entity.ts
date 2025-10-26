@@ -5,7 +5,7 @@ import { Notification } from "src/notification/notification.entity";
 import { Offre } from "src/offer/offer.entity";
 import { Portfolio } from "src/portfolio/portfolio.entity";
 import { Project } from "src/project/project.entity";
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity,  ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 
 
@@ -52,9 +52,6 @@ export class User {
 
     @OneToOne(() => Portfolio, (portfolio) => portfolio.user, { onDelete: 'CASCADE' ,eager : true})
     portfolio: Portfolio;
-
-    @OneToMany(() => Project, project => project.user,{ eager: true })
-    projects: Project[];
      
     @OneToMany(() => Notification, notification => notification.user)
     notifications: Notification[];
