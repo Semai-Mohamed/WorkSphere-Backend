@@ -9,7 +9,7 @@ import type { EmailCheckDto, PasswordCheckDto, RequestWithUser } from 'src/dto/a
 import { Public } from './auth.metadata';
 import { AuthGuard } from 'node_modules/@nestjs/passport';
 import type { Request, Response } from 'node_modules/@types/express';
-import { RedisGuard } from './strategies/redis.strategy/redis.guard';
+import { RedisGuard } from '../common/strategies/redis.strategy/redis.guard';
 import { Cookies } from '../common/cookies.decorator';
 
 

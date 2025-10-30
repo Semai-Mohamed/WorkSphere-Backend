@@ -5,7 +5,7 @@ import { ConfigService } from "@nestjs/config";
 import { Request } from "express";
 import { Reflector } from "node_modules/@nestjs/core";
 import { IS_PUBLIC_KEY } from "./auth.metadata";
-import { JwtStrategy } from "./strategies/token.strategy/jwt.strategy";
+import { JwtStrategy } from '../common/strategies/token.strategy/jwt.strategy';
 import Redis from "node_modules/ioredis/built";
 
 @Injectable()

@@ -6,20 +6,16 @@ export class CreatePortfolioDto {
   @IsString()
   mobile: string;
 
-  @IsOptional()
-  @IsString()
-  photo?: string;
-
   @IsString()
   description: string;
 
   
   @IsString()
   location: string;
-
+ 
   @IsOptional()
   @IsUrl({}, { message: 'portfolioLink must be a valid URL' })
   portfolioLink?: string;
 }
-export class UpdatePortfolio extends PickType(CreatePortfolioDto, ["mobile","photo","description","portfolioLink","location"] as const) {}
+export class UpdatePortfolio extends PickType(CreatePortfolioDto, ["mobile","description","portfolioLink","location"] as const) {}
 

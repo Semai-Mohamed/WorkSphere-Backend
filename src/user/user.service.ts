@@ -49,11 +49,10 @@ export class UserService {
         }
         const {password : _ , ...result} = user
         return result as User 
-
     }
 
     async getUser(userId : number):Promise<User>{
-      const user = await this.userRepository.findOne({where : {id : userId}})
+      const user = await this.userRepository.findOne({where : {id : userId} })
       if(!user) throw new NotFoundException(`cant find the user with ${userId}`)
       return user
     }

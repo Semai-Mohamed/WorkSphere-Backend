@@ -44,7 +44,7 @@ export class OfferService {
     async GetOfferById(offerId : number) {
         const offer = await this.offerRepository.findOne({
             where : {id : offerId},
-            relations : ['user']
+            relations : ['user','enroledUsers']
         })
         if(!offer) throw new NotFoundException('Cannot get offer')
         return offer
@@ -67,33 +67,28 @@ export class OfferService {
         return {message : 'offer deleted successfully'}
     }
 
-     async enrolled(userId: number, offerId: number) {
-    return this.dataSource.transaction(async (manager) => {
-    const offerRepo = manager.getRepository(Offre);
-    const userRepo = manager.getRepository(User);
-    const offer = await offerRepo.findOne({
-      where: { id: offerId },
-      relations: ['enroledUsers'],
-    });
-    
-    const user = await userRepo.findOne({
-        where : {id : userId},
-        relations: ['enrolledOffres'],
-    })
-
-
-    if (!offer) throw new NotFoundException('Offer not found');
-    if (!user) throw new BadRequestException('User not found');
-    if (offer.enroledUsers.some((u) => u.id === userId))
-      throw new BadRequestException('Already enrolled');
-
-    offer.enroledUsers.push(user);
-    user.enrolledOffres.push(offer);
-
-    await userRepo.save(user);
-    await offerRepo.save(offer);
-
-    return {message : 'User enrolled successfully'}
+    async enrolled(userId: number, offerId: number) {
+        return this.dataSource.transaction(async (manager) => {
+            const offerRepo = manager.getRepository(Offre);
+            const userRepo = manager.getRepository(User);
+            const offer = await offerRepo.findOne({
+                where: { id: offerId },
+                relations: ['enroledUsers'],
+            });
+            const user = await userRepo.findOne({
+                where : {id : userId},
+                relations: ['enrolledOffres'],
+            })
+            if (!offer) throw new NotFoundException('Offer not found');
+            if (!user) throw new BadRequestException('User not found');
+            if (offer.enroledUsers.some((u) => u.id === userId))
+                throw new BadRequestException('Already enrolled');
+            offer.enroledUsers.push(user);
+            user.enrolledOffres.push(offer)
+            await userRepo.save(user)
+            await offerRepo.save(offer)
+            console.log(user)
+            return {message : 'User enrolled successfully'}
   });
 }
 

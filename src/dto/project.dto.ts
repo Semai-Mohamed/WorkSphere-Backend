@@ -13,9 +13,6 @@ export class CreateProjectDto {
   @IsString()
   link?: string;
 
-  
-  @IsString()
-  photo?: string;
 
   @IsArray()
   @IsString({ each: true })
@@ -30,7 +27,6 @@ export class UpdateProjectDto extends PickType(CreateProjectDto, [
   "title",
   "description",
   "link",
-  "photo",
   "category",
   "technologies",
 ] as const) {}

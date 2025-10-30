@@ -32,8 +32,7 @@ export class PoliciesGuard implements CanActivate {
         const repository = this.dataSource.getRepository(subject)
         if (subject.name === 'User') {return true}
         const entity =await repository.findOne({ where: { id } ,relations : ['user']}) ? await repository.findOne({ where: { id } ,relations : ['user']}) : subject;
-        console.log(entity,action)
-        console.log(subject.name)
+       
         let canAccess :any
         if(!fieldName) canAccess = ability.can(action, entity)
         else canAccess = ability.can(action,entity,fieldName )

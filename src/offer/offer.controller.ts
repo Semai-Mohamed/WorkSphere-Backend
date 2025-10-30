@@ -5,7 +5,6 @@ import { Offre } from './offer.entity';
 import { CreateOffreDto } from 'src/dto/offer.service.dto';
 import type { RequestWithUser } from 'src/dto/auth.dto';
 import { GetUserId } from 'src/common/user.decorator';
-import { userInfo } from 'os';
 
 @Controller('offer')
 export class OfferController {

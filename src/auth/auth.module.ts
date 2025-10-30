@@ -10,16 +10,16 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from 'node_modules/@nestjs/core';
 import { AuthGuard } from './auth.guard';
-import { JwtStrategy } from './strategies/token.strategy/jwt.strategy';
-import { GoogleStrategy } from './strategies/google.strategy';
+import { JwtStrategy } from '../common/strategies/token.strategy/jwt.strategy';
+import { GoogleStrategy } from '../common/strategies/google.strategy';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import Redis from 'ioredis';
-import { RedisClient } from './strategies/redis.strategy/redis.client';
-import { RedisGuard } from './strategies/redis.strategy/redis.guard';
+import { RedisClient } from '../common/strategies/redis.strategy/redis.client';
+import { RedisGuard } from '../common/strategies/redis.strategy/redis.guard';
 import { TypeOrmModule } from 'node_modules/@nestjs/typeorm';
 import { User } from 'src/user/user.entity';
-import { NodeMailderStrategy } from './strategies/nodemailer.strategy';
-import { CookiesStrategy } from './strategies/token.strategy/cookies.strategy';
+import { NodeMailderStrategy } from '../common/strategies/nodemailer.strategy';
+import { CookiesStrategy } from '../common/strategies/token.strategy/cookies.strategy';
 @Module({
   imports : [
     TypeOrmModule.forFeature([User]),

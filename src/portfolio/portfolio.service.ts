@@ -5,6 +5,7 @@ import { Portfolio } from './portfolio.entity';
 import { Repository } from 'node_modules/typeorm';
 import { CreatePortfolioDto } from 'src/dto/portfolio.dto';
 import { User } from 'src/user/user.entity';
+import { CloudinaryStrategy } from 'src/common/strategies/cloudinary.strategy';
 
 @Injectable()
 export class PortfolioService {
@@ -13,20 +14,22 @@ export class PortfolioService {
         private readonly portfolioRepository :Repository<Portfolio>,
 
         @InjectRepository(User)
-        private readonly userRepository : Repository<User>
+        private readonly userRepository : Repository<User>,
+
+        private readonly cloudinaryStrategy: CloudinaryStrategy
     ){}
-    async createPortfolio(createPortfolioDto : CreatePortfolioDto,userId : number):Promise<Portfolio>{
+    async createPortfolio(createPortfolioDto : CreatePortfolioDto,userId : number,file?: Express.Multer.File):Promise<Portfolio>{
         const user = await this.userRepository.findOne({where : {id : userId},relations: ['portfolio'],})
-        if(!user){
-            throw new NotFoundException('User not found')
-        }
-        console.log(user.portfolio)
-        if(user.portfolio){
-            throw new BadRequestException('User already has a portfolio')
+        if(!user) throw new NotFoundException('User not found')
+        if(user.portfolio) throw new BadRequestException('User already has a portfolio')
+        let photoUrl : string | undefined = undefined
+        if(file){
+           photoUrl = await this.cloudinaryStrategy.uploadFile(file, 'portfolios-photos') as string
         }
         const portfolio = this.portfolioRepository.create({
             ...createPortfolioDto,
             user : {id : userId},
+            photo : photoUrl
         })
         return await this.portfolioRepository.save(portfolio)
     }
@@ -40,11 +43,17 @@ export class PortfolioService {
         return portfolio
     }
 
-    async updateUserPortfolio(userId : number, dto : any){
+    async updateUserPortfolio(userId : number, dto : any,file?: Express.Multer.File):Promise<Portfolio>{
         const portfolio = await this.getUserPortfolio(userId)
+        let photoUrl : string | undefined = undefined
+        if(file){
+           photoUrl = await this.cloudinaryStrategy.uploadFile(file, 'portfolios-photos') as string
+        }
+    
         const updatedPortfolio = await this.portfolioRepository.preload({
+            ...dto,
             id : portfolio.id,
-            ...dto
+            photo : photoUrl
         })
         if(!updatedPortfolio){
             throw new BadRequestException("cannot update your portfolio")

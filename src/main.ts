@@ -6,7 +6,7 @@ import { AppModule } from './app.module';
 import { Transport } from '@nestjs/microservices';
 import { ValidationPipe } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
-import { AllExceptionsFilter } from './filters/filter.exseptions';
+import { AllExceptionsFilter } from './filters/filter.exceptions';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

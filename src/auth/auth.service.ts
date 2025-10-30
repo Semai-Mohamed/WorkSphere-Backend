@@ -6,13 +6,17 @@ import { BadRequestException, Inject, Injectable, UnauthorizedException } from '
 import { UserService } from '../user/user.service';
 import { CreateUserDto, LoginUserDto } from '../dto/user.dto';
 import { User } from '../user/user.entity';
-import { JwtStrategy } from './strategies/token.strategy/jwt.strategy';
-import { RedisClient } from './strategies/redis.strategy/redis.client';
-import { EmailCheckDto, PasswordCheckDto, RequestWithUser } from 'src/dto/auth.dto';
+import { JwtStrategy } from '../common/strategies/token.strategy/jwt.strategy';
+import { RedisClient } from '../common/strategies/redis.strategy/redis.client';
+import {
+  EmailCheckDto,
+  PasswordCheckDto,
+  RequestWithUser,
+} from 'src/dto/auth.dto';
 import Redis from 'node_modules/ioredis/built';
 import { randomBytes } from 'crypto';
 import * as bcrypt from 'bcrypt';
-import { CookiesStrategy } from './strategies/token.strategy/cookies.strategy';
+import { CookiesStrategy } from '../common/strategies/token.strategy/cookies.strategy';
 import { Response } from 'node_modules/@types/express';
 
 
