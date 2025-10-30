@@ -30,16 +30,19 @@ export class PoliciesGuard implements CanActivate {
         const ability = this.caslAbilityFactory.createForUser(user)
         
         const repository = this.dataSource.getRepository(subject)
-        if (subject.name === 'User') {return true}
-        const entity =await repository.findOne({ where: { id } ,relations : ['user']}) ? await repository.findOne({ where: { id } ,relations : ['user']}) : subject;
-       
+        let entity : any
+        if (subject.name === 'User') {
+            entity = await repository.findOne({ where: { id } }) ? await repository.findOne({ where: { id } }) : subject;
+        }
+        else {
+            entity =await repository.findOne({ where: { id } ,relations : ['user']}) ? await repository.findOne({ where: { id } ,relations : ['user']}) : subject;
+        }       
         let canAccess :any
         if(!fieldName) canAccess = ability.can(action, entity)
         else canAccess = ability.can(action,entity,fieldName )
          if (!canAccess) {           
            throw new ForbiddenException(`You cannot ${action} this ${subject.name}`);
        }
-    
        return true
     }
 }
