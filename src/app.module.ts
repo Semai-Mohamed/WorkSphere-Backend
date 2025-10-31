@@ -24,7 +24,7 @@ import { Portfolio } from './portfolio/portfolio.entity';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({envFilePath : '.development.env',isGlobal:true}),
+    ConfigModule.forRoot({ envFilePath: '.development.env', isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -32,7 +32,15 @@ import { Portfolio } from './portfolio/portfolio.entity';
       username: 'postgres',
       password: 'postgres',
       database: 'postgres',
-      entities: [User,Project,Notification,Conversation,Message,Offre,Portfolio],
+      entities: [
+        User,
+        Project,
+        Notification,
+        Conversation,
+        Message,
+        Offre,
+        Portfolio,
+      ],
       synchronize: true,
     }),
     UserModule,
@@ -43,7 +51,7 @@ import { Portfolio } from './portfolio/portfolio.entity';
     NotificationModule,
     ProjectModule,
     OfferModule,
-    PortfolioModule
+    PortfolioModule,
   ],
   controllers: [AppController],
   providers: [AppService],

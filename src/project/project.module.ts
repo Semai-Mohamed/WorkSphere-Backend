@@ -8,8 +8,8 @@ import { CaslModule } from 'src/casl/casl.module';
 import { CloudinaryStrategy } from 'src/common/strategies/cloudinary.strategy';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User,Project]),CaslModule],
+  imports: [TypeOrmModule.forFeature([User, Project]), CaslModule],
   controllers: [ProjectController],
-  providers: [ProjectService,CloudinaryStrategy]
+  providers: [ProjectService, CloudinaryStrategy],
 })
 export class ProjectModule {}

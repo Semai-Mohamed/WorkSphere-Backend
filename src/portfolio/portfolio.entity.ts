@@ -1,5 +1,13 @@
 import { User } from 'src/user/user.entity';
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, CreateDateColumn, UpdateDateColumn, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
+  JoinColumn,
+} from 'typeorm';
 
 @Entity()
 export class Portfolio {
@@ -23,13 +31,11 @@ export class Portfolio {
   location: string;
 
   @Column({ nullable: true })
-  portfolioLink?: string; 
-  
+  portfolioLink?: string;
+
   @CreateDateColumn()
   createdAt: Date;
 
   @UpdateDateColumn()
   updatedAt: Date;
-
-  
 }

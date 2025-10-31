@@ -1,17 +1,15 @@
-import { IsNotEmpty, IsString,  IsArray, IsEnum} from 'class-validator';
+import { IsNotEmpty, IsString, IsArray, IsEnum } from 'class-validator';
 import { PickType } from 'node_modules/@nestjs/mapped-types';
 export enum Type {
   FREELANCE_OFFER = 'freelanceOffre',
-  CLIENT_OFFER= 'clientOffre',
+  CLIENT_OFFER = 'clientOffre',
 }
 export enum Status {
-  FINISHED = "finished",
-  NOTFINISHED = "notfinished",
-  NOTAPPROVED = "not approved"
-  
+  FINISHED = 'finished',
+  NOTFINISHED = 'notfinished',
+  NOTAPPROVED = 'not approved',
 }
 export class CreateOffreDto {
- 
   @IsNotEmpty({ message: 'Service name is required' })
   @IsString()
   service: string;
@@ -37,16 +35,14 @@ export class CreateOffreDto {
 
   @IsEnum(Status)
   status: Status;
-
 }
 
 export class UpdateOffreDto extends PickType(CreateOffreDto, [
-  "service",
-  "description",
-  "price",
-  "type",
-  "category",
-  "technologies",
-  "status",
+  'service',
+  'description',
+  'price',
+  'type',
+  'category',
+  'technologies',
+  'status',
 ] as const) {}
-

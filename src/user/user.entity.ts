@@ -1,56 +1,62 @@
-import { AuthProvider, UserRole } from "src/dto/user.dto";
-import { Offre } from "src/offer/offer.entity";
-import { Portfolio } from "src/portfolio/portfolio.entity";
-import { Column, CreateDateColumn, Entity,  ManyToMany,  OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-
-
+import { AuthProvider, UserRole } from 'src/dto/user.dto';
+import { Offre } from 'src/offer/offer.entity';
+import { Portfolio } from 'src/portfolio/portfolio.entity';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export class User {
-    @PrimaryGeneratedColumn()
-    id : number
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
-    firstName : string
+  @Column()
+  firstName: string;
 
-    @Column()
-    lastName : string
+  @Column()
+  lastName: string;
 
-    @Column()
-    email : string
+  @Column()
+  email: string;
 
-    @Column({
-        type: 'enum',
-        enum: AuthProvider,
-        default: AuthProvider.LOCAL
-    })
-    provider: AuthProvider;
+  @Column({
+    type: 'enum',
+    enum: AuthProvider,
+    default: AuthProvider.LOCAL,
+  })
+  provider: AuthProvider;
 
-    @Column({ nullable: true })
-    password?: string;
+  @Column({ nullable: true })
+  password?: string;
 
-    @Column({ nullable: true ,default : false})
-    isEmailConfirmed? : boolean
+  @Column({ nullable: true, default: false })
+  isEmailConfirmed?: boolean;
 
-    @Column({
-       type: 'enum',
-       enum: UserRole,
-      default: UserRole.CLIENT
-       })
-    role: UserRole;
+  @Column({
+    type: 'enum',
+    enum: UserRole,
+    default: UserRole.CLIENT,
+  })
+  role: UserRole;
 
-    @CreateDateColumn()
-    createdAt: Date;
+  @CreateDateColumn()
+  createdAt: Date;
 
-    @UpdateDateColumn()
-    updatedAt: Date;
-    
+  @UpdateDateColumn()
+  updatedAt: Date;
 
-    @OneToOne(() => Portfolio, (portfolio) => portfolio.user, { onDelete: 'CASCADE' ,eager : true})
-    portfolio: Portfolio;
-     
+  @OneToOne(() => Portfolio, (portfolio) => portfolio.user, {
+    onDelete: 'CASCADE',
+    eager: true,
+  })
+  portfolio: Portfolio;
 
-    @ManyToMany(() => Offre, offre => offre.enroledUsers, { eager: true })
-    enrolledOffres: Offre[];
-
+  @ManyToMany(() => Offre, (offre) => offre.enroledUsers, { eager: true })
+  enrolledOffres: Offre[];
 }

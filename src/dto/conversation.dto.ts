@@ -1,9 +1,9 @@
-import { IsNotEmpty, IsNumber} from 'class-validator';
+import { IsNotEmpty, IsNumber } from 'class-validator';
 
 export class CreateConversationDto {
   @IsNotEmpty()
   @IsNumber()
-  id : number
+  id: number;
 
   @IsNotEmpty()
   @IsNumber()

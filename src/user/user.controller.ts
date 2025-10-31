@@ -9,24 +9,22 @@ import { UpdateUserDto } from 'src/dto/user.dto';
 
 @Controller('user')
 export class UserController {
-    constructor(private readonly userService : UserService){}
-    
+  constructor(private readonly userService: UserService) {}
 
-    @Get('profile')
-    getProfile(@Req() req : RequestWithUser){
-        return req.user
-    }
+  @Get('profile')
+  getProfile(@Req() req: RequestWithUser) {
+    return req.user;
+  }
 
-    @CheckPolicies('read', User)
-    @Get(':userId')
-    get(@Param('userId') userId : number){
-        return this.userService.getUser(userId)
-    }
-    
-    @CheckPolicies('update', User)
-    @Patch('update')
-    update(@Body() dto : UpdateUserDto , @GetUserId() userId : number){
-        return this.userService.updateUser(userId,dto)
-    }
+  @CheckPolicies('read', User)
+  @Get(':userId')
+  get(@Param('userId') userId: number) {
+    return this.userService.getUser(userId);
+  }
 
+  @CheckPolicies('update', User)
+  @Patch('update')
+  update(@Body() dto: UpdateUserDto, @GetUserId() userId: number) {
+    return this.userService.updateUser(userId, dto);
+  }
 }

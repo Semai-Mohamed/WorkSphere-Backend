@@ -7,8 +7,8 @@ import { Offre } from './offer.entity';
 import { CaslModule } from 'src/casl/casl.module';
 
 @Module({
-  imports : [TypeOrmModule.forFeature([User,Offre]),CaslModule],
+  imports: [TypeOrmModule.forFeature([User, Offre]), CaslModule],
   controllers: [OfferController],
-  providers: [OfferService]
+  providers: [OfferService],
 })
 export class OfferModule {}

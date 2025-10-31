@@ -6,10 +6,10 @@ import { Project } from 'src/project/project.entity';
 
 @Controller('dashbord')
 export class DashbordController {
-    @Get()
-    @UseGuards(PoliciesGuard)
-    @CheckPolicies('read',Project)
-    findAll(){
-        return ""
-    }
+  @Get()
+  @UseGuards(PoliciesGuard)
+  @CheckPolicies('read', Project)
+  findAll() {
+    return '';
+  }
 }

@@ -4,8 +4,8 @@ import { DashbordService } from './dashbord.service';
 import { CaslModule } from 'src/casl/casl.module';
 
 @Module({
-  imports : [CaslModule],
+  imports: [CaslModule],
   controllers: [DashbordController],
-  providers: [DashbordService]
+  providers: [DashbordService],
 })
 export class DashbordModule {}

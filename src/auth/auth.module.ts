@@ -21,13 +21,13 @@ import { User } from 'src/user/user.entity';
 import { NodeMailderStrategy } from '../common/strategies/nodemailer.strategy';
 import { CookiesStrategy } from '../common/strategies/token.strategy/cookies.strategy';
 @Module({
-  imports : [
+  imports: [
     TypeOrmModule.forFeature([User]),
-    forwardRef(() =>UserModule),
+    forwardRef(() => UserModule),
     // نستحق هذي فل web socket
     ClientsModule.register([
       {
-        name: 'Client_REDIS_SERVICE', 
+        name: 'Client_REDIS_SERVICE',
         transport: Transport.REDIS,
         options: {
           host: 'localhost',
@@ -38,20 +38,26 @@ import { CookiesStrategy } from '../common/strategies/token.strategy/cookies.str
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory:  (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET'), 
-        signOptions: { expiresIn: '1h' }, 
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET'),
+        signOptions: { expiresIn: '1h' },
       }),
     }),
-    
   ],
   controllers: [AuthController],
-  providers: [AuthService,JwtStrategy,GoogleStrategy,RedisClient,RedisGuard,NodeMailderStrategy,CookiesStrategy,
+  providers: [
+    AuthService,
+    JwtStrategy,
+    GoogleStrategy,
+    RedisClient,
+    RedisGuard,
+    NodeMailderStrategy,
+    CookiesStrategy,
     {
-      provide : APP_GUARD,
-      useClass : AuthGuard
+      provide: APP_GUARD,
+      useClass: AuthGuard,
     },
-     {
+    {
       provide: 'REDIS_CLIENT',
       useFactory: () => {
         return new Redis({
@@ -60,8 +66,7 @@ import { CookiesStrategy } from '../common/strategies/token.strategy/cookies.str
         });
       },
     },
-    
   ],
-  exports : [JwtStrategy,GoogleStrategy,]
+  exports: [JwtStrategy, GoogleStrategy],
 })
 export class AuthModule {}

@@ -9,6 +9,6 @@ import { CloudinaryStrategy } from 'src/common/strategies/cloudinary.strategy';
 @Module({
   imports: [TypeOrmModule.forFeature([Portfolio, User])],
   controllers: [PortfolioController],
-  providers: [PortfolioService, CloudinaryStrategy]
+  providers: [PortfolioService, CloudinaryStrategy],
 })
 export class PortfolioModule {}

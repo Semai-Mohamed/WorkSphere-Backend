@@ -1,7 +1,6 @@
-import { IsNotEmpty, IsString, IsArray, } from 'class-validator';
+import { IsNotEmpty, IsString, IsArray } from 'class-validator';
 import { PickType } from '@nestjs/mapped-types';
 export class CreateProjectDto {
-  
   @IsNotEmpty()
   @IsString()
   title: string;
@@ -13,20 +12,18 @@ export class CreateProjectDto {
   @IsString()
   link?: string;
 
-
   @IsArray()
   @IsString({ each: true })
   category: string[];
 
-  
   @IsArray()
   @IsString({ each: true })
   technologies: string[];
 }
 export class UpdateProjectDto extends PickType(CreateProjectDto, [
-  "title",
-  "description",
-  "link",
-  "category",
-  "technologies",
+  'title',
+  'description',
+  'link',
+  'category',
+  'technologies',
 ] as const) {}

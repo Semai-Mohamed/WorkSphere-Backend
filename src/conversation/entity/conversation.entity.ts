@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  OneToMany,
+  JoinColumn,
+} from 'typeorm';
 import { Message } from './message.entity';
 import { User } from 'src/user/user.entity';
 
@@ -8,13 +14,13 @@ export class Conversation {
   id: number;
 
   @JoinColumn()
-  @ManyToOne(() => User,)
+  @ManyToOne(() => User)
   creator: User;
-  
+
   @JoinColumn()
-  @ManyToOne(() => User,{  onDelete: 'CASCADE' } )
+  @ManyToOne(() => User, { onDelete: 'CASCADE' })
   participant: User;
 
-  @OneToMany(() => Message, message => message.conversation)
+  @OneToMany(() => Message, (message) => message.conversation)
   messages: Message[];
 }

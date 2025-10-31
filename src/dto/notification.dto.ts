@@ -1,9 +1,9 @@
-import { IsNotEmpty, IsString,  IsBoolean, IsNumber} from 'class-validator';
+import { IsNotEmpty, IsString, IsBoolean, IsNumber } from 'class-validator';
 
 export class CreateNotificationDto {
   @IsNotEmpty()
   @IsNumber()
-  id :number
+  id: number;
 
   @IsNotEmpty({ message: 'Message is required' })
   @IsString()
@@ -20,6 +20,4 @@ export class CreateNotificationDto {
   @IsNotEmpty({ message: 'purpose cannot be empty' })
   @IsString()
   purpose: string;
-
-  
 }
