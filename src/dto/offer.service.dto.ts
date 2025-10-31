@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString, IsArray, IsEnum } from 'class-validator';
-import { PickType } from 'node_modules/@nestjs/mapped-types';
+import { PartialType, PickType } from 'node_modules/@nestjs/mapped-types';
 export enum Type {
   FREELANCE_OFFER = 'freelanceOffre',
   CLIENT_OFFER = 'clientOffre',
@@ -33,16 +33,16 @@ export class CreateOffreDto {
   @IsString({ each: true })
   technologies: string[];
 
-  @IsEnum(Status)
-  status: Status;
+  
 }
-
-export class UpdateOffreDto extends PickType(CreateOffreDto, [
-  'service',
-  'description',
-  'price',
-  'type',
-  'category',
-  'technologies',
-  'status',
-] as const) {}
+ 
+export class UpdateOffreDto extends PartialType(
+  PickType(CreateOffreDto, [
+    'service',
+    'description',
+    'price',
+    'type',
+    'category',
+    'technologies',
+  ] as const),
+) {}

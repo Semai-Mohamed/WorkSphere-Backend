@@ -149,8 +149,10 @@ export class OfferService {
     const offer = await this.GetOfferById(offerId);
     const user = await this.userRepository.findOne({ where: { id: userId } });
     if (!user) throw new NotFoundException('User not found');
-    if (offer.accepted && offer.accepted.id !== userId)
+    if (offer.accepted )
       throw new BadRequestException('Offer already accepted by a user');
+    if (!offer.enroledUsers.some((u) => u.id === userId))
+      throw new BadRequestException('User is not enrolled in this offer');
     offer.accepted = user;
     offer.status = Status.NOTFINISHED;
     await this.offerRepository.save(offer);
@@ -162,6 +164,7 @@ export class OfferService {
     if (!offer.accepted)
       throw new BadRequestException('Offer not accepted by any user');
     offer.accepted = null;
+    offer.status = Status.NOTAPPROVED
     await this.offerRepository.save(offer);
     return { message: 'User unaccepted successfully' };
   }

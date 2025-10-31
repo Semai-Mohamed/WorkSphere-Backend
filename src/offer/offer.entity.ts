@@ -62,4 +62,16 @@ export class Offre {
   @JoinColumn()
   @OneToOne(() => Conversation, { eager: true })
   projectConversation: Conversation;
+
+  @Column({ nullable: true })
+  paymentIntentId?: string;
+
+  @Column({ nullable: true })
+  freelancerStripeAccountId?: string;
+
+  @Column({ default: false })
+  clientConfirmed: boolean;
+
+  @Column({ default: false })
+  freelancerConfirmed: boolean;
 }

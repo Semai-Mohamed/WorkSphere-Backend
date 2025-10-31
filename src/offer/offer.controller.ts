@@ -11,7 +11,7 @@ import {
 import { OfferService } from './offer.service';
 import { CheckPolicies } from 'src/casl/policy/policy.metadata';
 import { Offre } from './offer.entity';
-import { CreateOffreDto } from 'src/dto/offer.service.dto';
+import { CreateOffreDto, UpdateOffreDto } from 'src/dto/offer.service.dto';
 import type { RequestWithUser } from 'src/dto/auth.dto';
 import { GetUserId } from 'src/common/user.decorator';
 
@@ -38,7 +38,7 @@ export class OfferController {
 
   @CheckPolicies('update', Offre)
   @Patch(':id')
-  updateOffer(@Param('id') offerId: number, @Body() dto: CreateOffreDto) {
+  updateOffer(@Param('id') offerId: number, @Body() dto: UpdateOffreDto) {
     return this.offerService.updateOffer(offerId, dto);
   }
 
@@ -56,9 +56,21 @@ export class OfferController {
 
   @CheckPolicies('enrol', Offre, 'enroledUsers')
   @CheckPolicies('update', Offre)
-  @Patch('unenrolled/:id')
-  async unenrolUser(@Param('id') offerId: number, @GetUserId() userId: number) {
+  @Patch('unenrolled/user/:id/:userId')
+  async unenrolUser(@Param('id') offerId: number, @Param('userId') userId: number) {
     return this.offerService.unenroll(userId, offerId);
+  }
+
+  @CheckPolicies('read', Offre)
+  @Get('enrolled/:id')
+  async getEnrolledUsers(@Param('id') offerId: number) {
+    return this.offerService.getEnrolledUsers(offerId);
+  }
+
+  @CheckPolicies('read', Offre)
+  @Get('enrolled/user/:id')
+  async getEnrolledOffers(@Param('id') userId: number) {
+    return this.offerService.getEnrolledOffers(userId);
   }
 
     @CheckPolicies('update', Offre)

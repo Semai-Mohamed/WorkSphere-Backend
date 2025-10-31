@@ -48,14 +48,12 @@ export class PoliciesGuard implements CanActivate {
       const canAccess = fieldName
         ? ability.can(action, entity, fieldName)
         : ability.can(action, entity);
-
-      if (!canAccess) {
-        throw new ForbiddenException(
-          `You cannot ${action} this ${subject.name}`,
-        );
-      }
+      console.log(entity);
+      if (canAccess) return true;
     }
 
-    return true;
+     throw new ForbiddenException(
+       `You are not allowed to perform this action.`,
+     );
   }
 }

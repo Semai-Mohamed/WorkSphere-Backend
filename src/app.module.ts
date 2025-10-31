@@ -21,6 +21,7 @@ import { Message } from './conversation/entity/message.entity';
 import { Offre } from './offer/offer.entity';
 import { PortfolioModule } from './portfolio/portfolio.module';
 import { Portfolio } from './portfolio/portfolio.entity';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { Portfolio } from './portfolio/portfolio.entity';
     ProjectModule,
     OfferModule,
     PortfolioModule,
+    PaymentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
