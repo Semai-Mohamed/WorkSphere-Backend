@@ -35,7 +35,7 @@ export class ProjectService {
             where : {user : {id : userId}},
           
         })
-        if(!projects) throw new BadRequestException('Cannot get projects')
+        if(!projects) throw new NotFoundException('Cannot get projects')
         return projects
     }
 
@@ -44,7 +44,7 @@ export class ProjectService {
             where : {id : projectId},
             relations : ['user']
         })
-        if(!project) throw new BadRequestException('Cannot get project')
+        if(!project) throw new NotFoundException('Cannot get project')
         return project
     }
 
@@ -65,9 +65,6 @@ export class ProjectService {
 
     async deleteProject(projectId : number): Promise<void> {
         const project = await this.getProjectById(projectId)
-        if(!project) throw new BadRequestException("cannot delete your project")
         await this.projectRepository.remove(project)
     }
-
-    
 }

@@ -32,6 +32,7 @@ export class Offre {
   @Column({
       type: 'enum',
       enum: Status,
+      default: Status.NOTAPPROVED
            })
   status: Status;
 
@@ -44,7 +45,7 @@ export class Offre {
   enroledUsers: User[];
   
   @ManyToOne(() => User)
-  accepted: User;
+  accepted: User | null;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
@@ -53,5 +54,10 @@ export class Offre {
   @OneToOne(() => Conversation , {eager : true})
   projectConversation : Conversation
 
+  @Column({ default: false })
+  clientApprovefinished: boolean;
+
+  @Column({ default: false })
+  freelancerApprovefinished: boolean;
+
 }
- 

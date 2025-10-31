@@ -1,7 +1,6 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { ProjectService } from './project.service';
 import { CheckPolicies } from 'src/casl/policy/policy.metadata';
-import { WorkSpherPolicyHandler } from 'src/casl/policy/policy.handler';
 import { Project } from './project.entity';
 import { GetUserId } from 'src/common/user.decorator';
 import { CreateProjectDto, UpdateProjectDto } from 'src/dto/project.dto';

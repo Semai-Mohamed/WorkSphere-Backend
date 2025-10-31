@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsNumber, IsArray, IsEnum} from 'class-validator';
+import { IsNotEmpty, IsString,  IsArray, IsEnum} from 'class-validator';
 import { PickType } from 'node_modules/@nestjs/mapped-types';
 export enum Type {
   FREELANCE_OFFER = 'freelanceOffre',
