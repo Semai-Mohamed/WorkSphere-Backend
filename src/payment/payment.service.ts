@@ -46,9 +46,9 @@ export class PaymentService {
             capture_method:'manual',
             transfer_data: { destination: freelancer.stripeAccountId },
             metadata: {
-                offerId: offer.id.toString(),
-                clientId: clientId.toString(),
-                freelancerId: freelancer.id.toString()
+                offerId: offer.id,
+                clientId: clientId,
+                freelancerId: freelancer.id
             }
         })
         offer.paymentIntentId = paymentIntent.id;

@@ -208,4 +208,19 @@ export class OfferService {
       return { message: 'Offer approved successfully', payment };
     });
   }
+
+  async markAsPaid(offerId: string) {
+  const offer = await this.offerRepository.findOne({ where: { id: offerId } });
+  if(!offer) throw new BadRequestException()
+  offer.status = Status.FINISHED;
+  await this.offerRepository.save(offer);
+}
+
+async markAsRefunded(offerId: string) {
+  const offer = await this.offerRepository.findOne({ where: { id: offerId } });
+    if(!offer) throw new BadRequestException()
+
+  offer.status = Status.NOTAPPROVED;
+  await this.offerRepository.save(offer);
+}
 }

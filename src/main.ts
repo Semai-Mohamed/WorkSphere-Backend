@@ -7,6 +7,7 @@ import { Transport } from '@nestjs/microservices';
 import { ValidationPipe } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
 import { AllExceptionsFilter } from './filters/filter.exceptions';
+import bodyParser from 'node_modules/@types/body-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -18,6 +19,7 @@ async function bootstrap() {
       transform: true,
     }),
   );
+  app.use('/webhooks', bodyParser.raw({ type: 'application/json' }));
   app.useGlobalFilters(new AllExceptionsFilter());
 
   app.use(cookieParser());
