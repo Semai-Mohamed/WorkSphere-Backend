@@ -1,9 +1,6 @@
-import { IsNotEmpty, IsString, IsArray, IsEnum } from 'class-validator';
+import { IsNotEmpty, IsString, IsArray} from 'class-validator';
 import { PartialType, PickType } from 'node_modules/@nestjs/mapped-types';
-export enum Type {
-  FREELANCE_OFFER = 'freelanceOffre',
-  CLIENT_OFFER = 'clientOffre',
-}
+
 export enum Status {
   FINISHED = 'finished',
   NOTFINISHED = 'notfinished',
@@ -22,8 +19,7 @@ export class CreateOffreDto {
   @IsString()
   price: string;
 
-  @IsEnum(Type)
-  type: Type;
+  
 
   @IsArray()
   @IsString({ each: true })
@@ -41,7 +37,6 @@ export class UpdateOffreDto extends PartialType(
     'service',
     'description',
     'price',
-    'type',
     'category',
     'technologies',
   ] as const),

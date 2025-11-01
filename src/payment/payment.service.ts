@@ -1,7 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from 'node_modules/@nestjs/config';
 import { InjectRepository } from 'node_modules/@nestjs/typeorm';
-import { Not } from 'node_modules/typeorm';
 import { Repository } from 'node_modules/typeorm/repository/Repository';
 import { Status } from 'src/dto/offer.service.dto';
 import { Offre } from 'src/offer/offer.entity';

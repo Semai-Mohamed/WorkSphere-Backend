@@ -65,12 +65,8 @@ export class CaslAbilityFactory {
       can('create', Project);
       can('update', Project, { 'user.id': user.id } as any);
       can('delete', Project, { 'user.id': user.id } as any);
-      can('create', Offre);
-      can('enrol', Offre, ['enroledUsers'], { type: 'clientOffre' } as any);
-      can('update', Offre, { 'user.id': user.id } as any);
-      can('delete', Offre, { 'user.id': user.id } as any);
+      can('enrol', Offre, ['enroledUsers'] as any);
     } else if (user.role === UserRole.CLIENT) {
-      can('enrol', Offre, ['enroledUsers'], { type: 'freelanceOffre' } as any);
       can('update', Offre, { 'user.id': user.id } as any);
       can('create', Offre);
       can('delete', Offre, { 'user.id': user.id } as any);

@@ -1,5 +1,5 @@
 import { Conversation } from 'src/conversation/entity/conversation.entity';
-import { Status, Type } from 'src/dto/offer.service.dto';
+import { Status } from 'src/dto/offer.service.dto';
 import { User } from 'src/user/user.entity';
 import {
   Entity,
@@ -28,9 +28,6 @@ export class Offre {
 
   @Column({ type: 'int', default: 0 })
   enrolledCount: number;
-
-  @Column({ type: 'enum', enum: Type })
-  type: Type;
 
   @Column('text', { array: true })
   category: string[];
