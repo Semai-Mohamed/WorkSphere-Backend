@@ -47,13 +47,13 @@ export class PaymentService {
     return { url: link.url };
   }
 
-  async createPaymentIntent(offerId: number, clientId: number) {
+  async createPaymentIntent(offerId: number, clientId: number,userId : number) {
     const offer = await this.offerRepository.findOne({
       where: { id: offerId },
       relations: ['accepted'],
     });
     if (!offer) throw new BadRequestException('Offer not found');
-    const freelancer = offer.accepted;
+    const freelancer = await this.userRepository.findOne({where : {id : userId}});
     if (!freelancer?.stripeAccountId)
       throw new NotFoundException('Freelancer Stripe account not found');
     const paymentIntent = await this.stripe.paymentIntents.create({
@@ -63,12 +63,13 @@ export class PaymentService {
       capture_method: 'manual',
       transfer_data: { destination: freelancer.stripeAccountId },
       metadata: {
-        offerId: offer.id,
-        clientId: clientId,
-        freelancerId: freelancer.id,
+        offerId: offer.id.toString(),
+        clientId: clientId.toString(),
+        freelancerId: freelancer.id.toString(),
       },
     });
     offer.paymentIntentId = paymentIntent.id;
+    
     await this.offerRepository.save(offer);
     return { clientSecret: paymentIntent.client_secret };
   }

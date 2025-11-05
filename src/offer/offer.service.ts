@@ -146,17 +146,20 @@ export class OfferService {
     return await this.dataSource.transaction(async (manager) => {
       const offerRepo = manager.getRepository(Offre);
       const userRepo = manager.getRepository(User);
-      const offer = await offerRepo.findOne({ where: { id: offerId } });
+      const offer = await offerRepo.findOne({ where: { id: offerId } ,relations : ['user','enroledUsers']});
       const user = await userRepo.findOne({ where: { id: userId } });
 
       if (!user) throw new NotFoundException('User not found');
       if (offer?.accepted)
         throw new BadRequestException('Offer already accepted by a user');
+      
       if (!offer?.enroledUsers.some((u) => u.id === userId))
         throw new BadRequestException('User is not enrolled in this offer');
+      
       const payment = await this.paymentService.createPaymentIntent(
         offerId,
         offer.user.id,
+        userId
       );
 
       return { message: 'User accepted successfully', payment };
