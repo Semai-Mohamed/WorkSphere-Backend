@@ -1,6 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from 'node_modules/@nestjs/config';
 import { InjectRepository } from 'node_modules/@nestjs/typeorm';
+import { Response } from 'node_modules/@types/express';
 import { Repository } from 'node_modules/typeorm/repository/Repository';
 import { Status } from 'src/dto/offer.service.dto';
 import { Offre } from 'src/offer/offer.entity';
@@ -26,16 +29,21 @@ export class PaymentService {
   async createFreelancerAccount(userId: number,offerId : number) {
     const user = await this.userRepository.findOne({ where: { id: userId } });
     if (!user) throw new BadRequestException('User not found');
-    const account = await this.stripe.accounts.create({
+    let link : any
+    try {
+        const account = await this.stripe.accounts.create({
       type: 'express',
       metadata: { userId: userId.toString(), offerId: offerId.toString() },
     });
-    const link = await this.stripe.accountLinks.create({
+     link = await this.stripe.accountLinks.create({
       account: account.id,
       refresh_url: this.configService.get('BackendHost') + '/onboarding/failed',
       return_url: this.configService.get('BackendHost') + '/onboarding/success',
       type: 'account_onboarding',
     });
+    } catch (error) {
+        throw new BadRequestException(error)
+    }
     return { url: link.url };
   }
 
@@ -132,10 +140,7 @@ export class PaymentService {
     throw new NotFoundException('User or Offer not found')
   }
   userRepo.stripeAccountId = accountId;
-  offerRepo.enroledUsers.push(userRepo);
-  userRepo.enrolledOffres.push(offerRepo);
   await this.userRepository.save(userRepo);
-  await this.offerRepository.save(offerRepo);
   console.log(`User ${userRepo.id} linked with Stripe account ${accountId}`);
 }
 

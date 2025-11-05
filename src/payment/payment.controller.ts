@@ -8,16 +8,17 @@ import {
   Headers,
   BadRequestException,
   NotFoundException,
+  
 } from '@nestjs/common';
+import type {RawBodyRequest} from '@nestjs/common'
 import type { Request } from 'express';
 import Stripe from 'stripe';
 import { ConfigService } from '@nestjs/config';
 import { OfferService } from 'src/offer/offer.service';
 import { PaymentService } from './payment.service';
-import { CheckPolicies } from 'src/casl/policy/policy.metadata';
-import { User } from 'src/user/user.entity';
-import { Offre } from 'src/offer/offer.entity';
+import { Public } from 'src/auth/auth.metadata';
 
+@Public()
 @Controller('webhooks')
 export class StripeWebhookController {
   private stripe: Stripe;
@@ -37,16 +38,16 @@ export class StripeWebhookController {
 
   @Post()
   async handleWebhook(
-    @Req() req: Request,
+    @Req() req: RawBodyRequest<Request>,
     @Headers('stripe-signature') sig: string,
   ) {
     const endpointSecret =
       this.configService.get('STRIPE_WEBHOOK_SECRET') || '';
     let event: Stripe.Event;
-
+  
     try {
       event = this.stripe.webhooks.constructEvent(
-        req['rawBody'],
+        req['rawBody'] as Buffer,
         sig,
         endpointSecret,
       );
@@ -78,12 +79,14 @@ export class StripeWebhookController {
       
       case 'account.updated':
         const account = event.data.object 
-        if(account.details_submitted){
-          console.log('Onboarding completed for account')
+        if(!account.details_submitted){
+          return 'not all details submitted yet'
         }
+        
         if(!account.metadata) throw new NotFoundException("Cannot find the user metadata")
         const freelancerId = account.metadata.userId
         const offerId = account.metadata.offerId
+        
         await this.paymentService.linkStripeAccount(account.id,freelancerId,offerId)
         break;
 

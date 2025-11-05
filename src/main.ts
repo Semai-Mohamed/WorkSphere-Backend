@@ -5,10 +5,11 @@ import { Transport } from '@nestjs/microservices';
 import { ValidationPipe } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
 import { AllExceptionsFilter } from './filters/filter.exceptions';
-import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule,{rawBody:true});
+  
+  app.use(cookieParser());
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -17,10 +18,8 @@ async function bootstrap() {
       transform: true,
     }),
   );
-  app.use('/webhooks', bodyParser.raw({ type: 'application/json' }));
   app.useGlobalFilters(new AllExceptionsFilter());
 
-  app.use(cookieParser());
 
   // Attach microservice
   app.connectMicroservice({

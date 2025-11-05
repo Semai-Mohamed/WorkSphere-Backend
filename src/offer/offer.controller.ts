@@ -105,13 +105,13 @@ export class OfferController {
     return this.offerService.approveFinishedByOwner(offerId, userId);
   }
   
-  @CheckPolicies('update', Offre)
   @CheckPolicies('update', User)
-  @Post('paymentMethod/:userId/:offerId')
+  @Post('payment/account/:userId/:offerId')
   async createStripeAccount(
     @Param('userId') userId: number,
     @Param('offerId') offerId: number,
   ) {
+    console.log(userId,offerId)
     const payment = await this.paymentService.createFreelancerAccount(
       userId,
       offerId,
