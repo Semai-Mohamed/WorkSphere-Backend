@@ -91,15 +91,10 @@ export class OfferService {
         throw new BadRequestException('Already enrolled');
       const payment = await this.paymentService.createFreelancerAccount(
         user.id,
+        offer.id
       );
       if (!payment?.url)
         throw new BadRequestException('Stripe account creation failed');
-
-      offer.enroledUsers.push(user);
-      user.enrolledOffres.push(offer);
-
-      await userRepo.save(user);
-      await offerRepo.save(offer);
 
       return { message: 'User enrolled successfully', url: payment.url };
     });

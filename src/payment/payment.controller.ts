@@ -7,6 +7,7 @@ import {
   Req,
   Headers,
   BadRequestException,
+  NotFoundException,
 } from '@nestjs/common';
 import type { Request } from 'express';
 import Stripe from 'stripe';
@@ -70,6 +71,17 @@ export class StripeWebhookController {
         const transfer = event.data.object;
 
         await this.paymentService.markAsFinshed(transfer.metadata.offerId);
+        break;
+      
+      case 'account.updated':
+        const account = event.data.object 
+        if(account.details_submitted){
+          console.log('Onboarding completed for account')
+        }
+        if(!account.metadata) throw new NotFoundException("Cannot find the user metadata")
+        const freelancerId = account.metadata.userId
+        const offerId = account.metadata.offerId
+        await this.paymentService.linkStripeAccount(account.id,freelancerId,offerId)
         break;
 
       default:
