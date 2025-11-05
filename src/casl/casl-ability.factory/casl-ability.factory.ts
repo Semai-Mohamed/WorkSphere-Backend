@@ -45,6 +45,7 @@ export class CaslAbilityFactory {
       $or: [{ creator: { id: user.id } }, { participant: { id: user.id } }],
     } as MongoQuery<Conversation>);
     can('read', Message, {
+
       $or: [{ creator: { id: user.id } }, { participant: { id: user.id } }],
     } as MongoQuery<Message>);
     can('create', Portfolio);
