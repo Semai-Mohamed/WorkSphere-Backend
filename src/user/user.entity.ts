@@ -45,7 +45,7 @@ export class User {
   })
   role: UserRole;
 
-  @Column({ default: null })
+  @Column({ type: 'varchar', default: null })
   stripeAccountId: string | null;
 
   @CreateDateColumn()

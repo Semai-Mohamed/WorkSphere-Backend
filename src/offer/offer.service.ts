@@ -11,7 +11,6 @@ import { DataSource, Repository } from 'node_modules/typeorm';
 import { User } from 'src/user/user.entity';
 import {
   CreateOffreDto,
-  Status,
   UpdateOffreDto,
 } from 'src/dto/offer.service.dto';
 import { RequestWithUser } from 'src/dto/auth.dto';
@@ -73,36 +72,38 @@ export class OfferService {
   }
 
   async enrolled(userId: number, offerId: number) {
-  return this.dataSource.transaction(async (manager) => {
-    const offerRepo = manager.getRepository(Offre);
-    const userRepo = manager.getRepository(User);
+    return this.dataSource.transaction(async (manager) => {
+      const offerRepo = manager.getRepository(Offre);
+      const userRepo = manager.getRepository(User);
 
-    const offer = await offerRepo.findOne({
-      where: { id: offerId },
-      relations: ['enroledUsers'],
+      const offer = await offerRepo.findOne({
+        where: { id: offerId },
+        relations: ['enroledUsers'],
+      });
+      const user = await userRepo.findOne({
+        where: { id: userId },
+        relations: ['enrolledOffres'],
+      });
+
+      if (!offer) throw new NotFoundException('Offer not found');
+      if (!user) throw new BadRequestException('User not found');
+      if (offer.enroledUsers.some((u) => u.id === userId))
+        throw new BadRequestException('Already enrolled');
+      const payment = await this.paymentService.createFreelancerAccount(
+        user.id,
+      );
+      if (!payment?.url)
+        throw new BadRequestException('Stripe account creation failed');
+
+      offer.enroledUsers.push(user);
+      user.enrolledOffres.push(offer);
+
+      await userRepo.save(user);
+      await offerRepo.save(offer);
+
+      return { message: 'User enrolled successfully', url: payment.url };
     });
-    const user = await userRepo.findOne({
-      where: { id: userId },
-      relations: ['enrolledOffres'],
-    });
-
-    if (!offer) throw new NotFoundException('Offer not found');
-    if (!user) throw new BadRequestException('User not found');
-    if (offer.enroledUsers.some((u) => u.id === userId))
-      throw new BadRequestException('Already enrolled');
-    const payment = await this.paymentService.createFreelancerAccount(user.id);
-    if (!payment?.url) throw new BadRequestException('Stripe account creation failed');
-
-    offer.enroledUsers.push(user);
-    user.enrolledOffres.push(offer);
-
-    await userRepo.save(user);
-    await offerRepo.save(offer);
-
-    return { message: 'User enrolled successfully', url: payment.url }
-  });
-}
-
+  }
 
   async unenroll(userId: number, offerId: number) {
     return this.dataSource.transaction(async (manager) => {
@@ -154,17 +155,14 @@ export class OfferService {
       const user = await userRepo.findOne({ where: { id: userId } });
 
       if (!user) throw new NotFoundException('User not found');
-      if (offer?.accepted) throw new BadRequestException('Offer already accepted by a user');
+      if (offer?.accepted)
+        throw new BadRequestException('Offer already accepted by a user');
       if (!offer?.enroledUsers.some((u) => u.id === userId))
         throw new BadRequestException('User is not enrolled in this offer');
-
-      offer.accepted = user;
-      offer.status = Status.NOTFINISHED;
-
-      await offerRepo.save(offer);
-
-  
-      const payment = await this.paymentService.createPaymentIntent(offerId, offer.user.id);
+      const payment = await this.paymentService.createPaymentIntent(
+        offerId,
+        offer.user.id,
+      );
 
       return { message: 'User accepted successfully', payment };
     });
@@ -174,13 +172,8 @@ export class OfferService {
     return await this.dataSource.transaction(async (manager) => {
       const offerRepo = manager.getRepository(Offre);
       const offer = await offerRepo.findOne({ where: { id: offerId } });
-      if (!offer?.accepted) throw new BadRequestException('Offer not accepted by any user');
-
-      offer.accepted = null;
-      offer.status = Status.NOTAPPROVED;
-
-      await offerRepo.save(offer);
-
+      if (!offer?.accepted)
+        throw new BadRequestException('Offer not accepted by any user');
       if (offer.paymentIntentId) {
         await this.paymentService.refundPayment(offerId);
       }
@@ -189,8 +182,8 @@ export class OfferService {
     });
   }
 
-    async approveFinishedByOwner(offerId: number, userId: number) {
-     return await this.dataSource.transaction(async (manager) => {
+  async approveFinishedByOwner(offerId: number, userId: number) {
+    return await this.dataSource.transaction(async (manager) => {
       const offerRepo = manager.getRepository(Offre);
       const userRepo = manager.getRepository(User);
       const offer = await offerRepo.findOne({ where: { id: offerId } });
@@ -198,29 +191,13 @@ export class OfferService {
 
       if (!user) throw new NotFoundException('User not found');
       if (offer?.user.id !== userId || !offer?.accepted)
-        throw new BadRequestException('Only the owner can approve the offer if there is an accepted user');
-
-      offer.status = Status.FINISHED;
-      await offerRepo.save(offer);
-
+        throw new BadRequestException(
+          'Only the owner can approve the offer if there is an accepted user',
+        );
       const payment = await this.paymentService.releasePayment(offerId);
 
       return { message: 'Offer approved successfully', payment };
     });
   }
 
-  async markAsPaid(offerId: string) {
-  const offer = await this.offerRepository.findOne({ where: { id: offerId } });
-  if(!offer) throw new BadRequestException()
-  offer.status = Status.FINISHED;
-  await this.offerRepository.save(offer);
-}
-
-async markAsRefunded(offerId: string) {
-  const offer = await this.offerRepository.findOne({ where: { id: offerId } });
-    if(!offer) throw new BadRequestException()
-
-  offer.status = Status.NOTAPPROVED;
-  await this.offerRepository.save(offer);
-}
 }
