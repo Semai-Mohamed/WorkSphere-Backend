@@ -14,10 +14,15 @@ import { Offre } from './offer.entity';
 import { CreateOffreDto, UpdateOffreDto } from 'src/dto/offer.service.dto';
 import type { RequestWithUser } from 'src/dto/auth.dto';
 import { GetUserId } from 'src/common/user.decorator';
+import { PaymentService } from 'src/payment/payment.service';
+import { User } from 'src/user/user.entity';
 
 @Controller('offer')
 export class OfferController {
-  constructor(private readonly offerService: OfferService) {}
+  constructor(
+    private readonly offerService: OfferService,
+    private readonly paymentService: PaymentService,
+  ) {}
   @CheckPolicies('create', Offre)
   @Post('add')
   addOffer(@Body() dto: CreateOffreDto, @Req() userId: RequestWithUser) {
@@ -57,7 +62,10 @@ export class OfferController {
   @CheckPolicies('enrol', Offre, 'enroledUsers')
   @CheckPolicies('update', Offre)
   @Patch('unenrolled/user/:id/:userId')
-  async unenrolUser(@Param('id') offerId: number, @Param('userId') userId: number) {
+  async unenrolUser(
+    @Param('id') offerId: number,
+    @Param('userId') userId: number,
+  ) {
     return this.offerService.unenroll(userId, offerId);
   }
 
@@ -73,23 +81,41 @@ export class OfferController {
     return this.offerService.getEnrolledOffers(userId);
   }
 
-    @CheckPolicies('update', Offre)
-    @Patch('accept/:id/:userId')
-    async acceptUser(
-        @Param('id') offerId: number,
-        @Param('userId') userId: number,
-    ) {
-        return this.offerService.acceptOffer(offerId, userId);
-    }
+  @CheckPolicies('update', Offre)
+  @Patch('accept/:id/:userId')
+  async acceptUser(
+    @Param('id') offerId: number,
+    @Param('userId') userId: number,
+  ) {
+    return this.offerService.acceptOffer(offerId, userId);
+  }
 
-    @CheckPolicies('update', Offre)
-    @Patch('unaccept/:id')
-    async unacceptUser(@Param('id') offerId: number) {
-        return this.offerService.unacceptOffer(offerId)
-    }
-
-    @Patch('approveFinished/:id')
-    async approveOffer(@Param('id') offerId: number, @GetUserId() userId: number) {
-        return this.offerService.approveFinishedByOwner(offerId, userId);
-    }
+  @CheckPolicies('update', Offre)
+  @Patch('unaccept/:id')
+  async unacceptUser(@Param('id') offerId: number) {
+    return this.offerService.unacceptOffer(offerId);
+  }
+   
+  
+  @Patch('approveFinished/:id')
+  async approveOffer(
+    @Param('id') offerId: number,
+    @GetUserId() userId: number,
+  ) {
+    return this.offerService.approveFinishedByOwner(offerId, userId);
+  }
+  
+  @CheckPolicies('update', Offre)
+  @CheckPolicies('update', User)
+  @Post('paymentMethod/:userId/:offerId')
+  async createStripeAccount(
+    @Param('userId') userId: number,
+    @Param('offerId') offerId: number,
+  ) {
+    const payment = await this.paymentService.createFreelancerAccount(
+      userId,
+      offerId,
+    );
+    return payment.url;
+  }
 }

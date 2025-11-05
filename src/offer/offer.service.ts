@@ -89,14 +89,14 @@ export class OfferService {
       if (!user) throw new BadRequestException('User not found');
       if (offer.enroledUsers.some((u) => u.id === userId))
         throw new BadRequestException('Already enrolled');
-      const payment = await this.paymentService.createFreelancerAccount(
-        user.id,
-        offer.id
-      );
-      if (!payment?.url)
-        throw new BadRequestException('Stripe account creation failed');
+      if(!user.stripeAccountId) throw new BadRequestException('Stripe account is required')
+      offer.enroledUsers.push(user);
+      user.enrolledOffres.push(offer);
 
-      return { message: 'User enrolled successfully', url: payment.url };
+      await userRepo.save(user);
+      await offerRepo.save(offer);
+
+      return { message: 'User enrolled successfully'};
     });
   }
 

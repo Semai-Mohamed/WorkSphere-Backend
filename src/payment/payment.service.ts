@@ -24,15 +24,18 @@ export class PaymentService {
   }
 
   async createFreelancerAccount(userId: number,offerId : number) {
-    const account = await this.stripe.accounts.create({ type: 'express' , metadata : {userId : userId.toString(),offerId : offerId.toString()}});
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) throw new BadRequestException('User not found');
+    const account = await this.stripe.accounts.create({
+      type: 'express',
+      metadata: { userId: userId.toString(), offerId: offerId.toString() },
+    });
     const link = await this.stripe.accountLinks.create({
       account: account.id,
       refresh_url: this.configService.get('BackendHost') + '/onboarding/failed',
       return_url: this.configService.get('BackendHost') + '/onboarding/success',
       type: 'account_onboarding',
     });
-    const user = await this.userRepository.findOne({ where: { id: userId } });
-    if (!user) throw new BadRequestException('User not found');
     return { url: link.url };
   }
 
@@ -128,15 +131,11 @@ export class PaymentService {
   if (!userRepo || !offerRepo) {
     throw new NotFoundException('User or Offer not found')
   }
-
   userRepo.stripeAccountId = accountId;
- 
-
   offerRepo.enroledUsers.push(userRepo);
   userRepo.enrolledOffres.push(offerRepo);
-
-await this.userRepository.save(userRepo);
-await this.offerRepository.save(offerRepo);
+  await this.userRepository.save(userRepo);
+  await this.offerRepository.save(offerRepo);
   console.log(`User ${userRepo.id} linked with Stripe account ${accountId}`);
 }
 

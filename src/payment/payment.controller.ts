@@ -14,6 +14,9 @@ import Stripe from 'stripe';
 import { ConfigService } from '@nestjs/config';
 import { OfferService } from 'src/offer/offer.service';
 import { PaymentService } from './payment.service';
+import { CheckPolicies } from 'src/casl/policy/policy.metadata';
+import { User } from 'src/user/user.entity';
+import { Offre } from 'src/offer/offer.entity';
 
 @Controller('webhooks')
 export class StripeWebhookController {
@@ -90,4 +93,6 @@ export class StripeWebhookController {
 
     return { received: true };
   }
+
+  
 }
