@@ -67,10 +67,14 @@ export class CaslAbilityFactory {
       can('update', Project, { 'user.id': user.id } as any);
       can('delete', Project, { 'user.id': user.id } as any);
       can('enrol', Offre, ['enroledUsers'] as any);
+      can ('create',Message)
+
     } else if (user.role === UserRole.CLIENT) {
       can('update', Offre, { 'user.id': user.id } as any);
       can('create', Offre);
       can('delete', Offre, { 'user.id': user.id } as any);
+      can ('create',Conversation)
+      can ('create',Message)
     }
     return build({
       detectSubjectType: (item) =>

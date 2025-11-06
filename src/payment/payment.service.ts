@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
@@ -78,13 +79,16 @@ export class PaymentService {
     const offer = await this.offerRepository.findOne({
       where: { id: offerId },
     });
-    if (offer?.status !== Status.FINISHED)
-      throw new BadRequestException('Offer not finished yet');
     if (!offer?.paymentIntentId)
       throw new NotFoundException('Payment not found');
-    const paymentIntent = await this.stripe.paymentIntents.capture(
+    let paymentIntent : any
+    try {
+      paymentIntent = await this.stripe.paymentIntents.capture(
       offer.paymentIntentId,
     );
+    } catch (error) {
+        throw new BadRequestException(error)
+    }
     return paymentIntent;
   }
 
@@ -109,6 +113,7 @@ export class PaymentService {
     if (!offer) throw new NotFoundException('Offer not found');
     offer.accepted = user;
     offer.status = Status.NOTFINISHED;
+    console.log(offer)
     await this.offerRepository.save(offer);
   }
 

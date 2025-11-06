@@ -59,7 +59,6 @@ export class StripeWebhookController {
       case 'payment_intent.succeeded':
         const paymentIntent = event.data.object ;
         
-        console.log(paymentIntent.metadata)
         await this.paymentService.markAsPaid(
           paymentIntent.metadata.offerId,
           paymentIntent.metadata.freelancerId,

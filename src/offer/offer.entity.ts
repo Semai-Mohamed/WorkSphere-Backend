@@ -1,4 +1,3 @@
-import { Conversation } from 'src/conversation/entity/conversation.entity';
 import { Status } from 'src/dto/offer.service.dto';
 import { User } from 'src/user/user.entity';
 import {
@@ -8,7 +7,6 @@ import {
   ManyToOne,
   ManyToMany,
   JoinTable,
-  OneToOne,
   JoinColumn,
 } from 'typeorm';
 
@@ -56,9 +54,7 @@ export class Offre {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @JoinColumn()
-  @OneToOne(() => Conversation, { eager: true })
-  projectConversation: Conversation;
+  
 
   @Column({ nullable: true })
   paymentIntentId?: string;

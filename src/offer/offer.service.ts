@@ -184,14 +184,16 @@ export class OfferService {
     return await this.dataSource.transaction(async (manager) => {
       const offerRepo = manager.getRepository(Offre);
       const userRepo = manager.getRepository(User);
-      const offer = await offerRepo.findOne({ where: { id: offerId } });
+    
+      const offer = await offerRepo.findOne({ where: { id: offerId } ,relations : ['user','accepted']});
       const user = await userRepo.findOne({ where: { id: userId } });
 
       if (!user) throw new NotFoundException('User not found');
       if (offer?.user.id !== userId || !offer?.accepted)
         throw new BadRequestException(
           'Only the owner can approve the offer if there is an accepted user',
-        );
+        )
+
       const payment = await this.paymentService.releasePayment(offerId);
 
       return { message: 'Offer approved successfully', payment };
