@@ -5,7 +5,7 @@ import { BadGatewayException, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { User } from '../user.entity';
 import { AuthProvider } from 'src/dto/user.dto';
-import { JwtStrategy } from 'src/common/strategies/token.strategy/jwt.strategy';
+import { JwtStrategy } from 'src/common/strategies/token/jwt.strategy';
 import { InjectRepository } from 'node_modules/@nestjs/typeorm';
 
 @Injectable()

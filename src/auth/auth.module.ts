@@ -10,21 +10,21 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from 'node_modules/@nestjs/core';
 import { AuthGuard } from './auth.guard';
-import { JwtStrategy } from '../common/strategies/token.strategy/jwt.strategy';
+import { JwtStrategy } from '../common/strategies/token/jwt.strategy';
 import { GoogleStrategy } from '../common/strategies/google.strategy';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import Redis from 'ioredis';
-import { RedisClient } from '../common/strategies/redis.strategy/redis.client';
-import { RedisGuard } from '../common/strategies/redis.strategy/redis.guard';
+import { RedisClient } from '../common/strategies/redis/redis.client';
+import { RedisGuard } from '../common/strategies/redis/redis.guard';
 import { TypeOrmModule } from 'node_modules/@nestjs/typeorm';
 import { User } from 'src/user/user.entity';
 import { NodeMailderStrategy } from '../common/strategies/nodemailer.strategy';
-import { CookiesStrategy } from '../common/strategies/token.strategy/cookies.strategy';
+import { CookiesStrategy } from '../common/strategies/token/cookies.strategy';
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
     forwardRef(() => UserModule),
-    // نستحق هذي فل web socket
+    // نستحق هذي فل مين يكون عندي بزاف microservices مشي multiple app instance 
     ClientsModule.register([
       {
         name: 'Client_REDIS_SERVICE',

@@ -23,7 +23,7 @@ import type {
 import { Public } from './auth.metadata';
 import { AuthGuard } from 'node_modules/@nestjs/passport';
 import type { Request, Response } from 'node_modules/@types/express';
-import { RedisGuard } from '../common/strategies/redis.strategy/redis.guard';
+import { RedisGuard } from '../common/strategies/redis/redis.guard';
 import { Cookies } from '../common/cookies.decorator';
 
 @Controller('auth')

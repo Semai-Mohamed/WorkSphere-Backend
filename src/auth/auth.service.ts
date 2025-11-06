@@ -11,8 +11,8 @@ import {
 import { UserService } from '../user/user.service';
 import { CreateUserDto, LoginUserDto } from '../dto/user.dto';
 import { User } from '../user/user.entity';
-import { JwtStrategy } from '../common/strategies/token.strategy/jwt.strategy';
-import { RedisClient } from '../common/strategies/redis.strategy/redis.client';
+import { JwtStrategy } from '../common/strategies/token/jwt.strategy';
+import { RedisClient } from '../common/strategies/redis/redis.client';
 import {
   EmailCheckDto,
   PasswordCheckDto,
@@ -21,7 +21,7 @@ import {
 import Redis from 'node_modules/ioredis/built';
 import { randomBytes } from 'crypto';
 import * as bcrypt from 'bcrypt';
-import { CookiesStrategy } from '../common/strategies/token.strategy/cookies.strategy';
+import { CookiesStrategy } from '../common/strategies/token/cookies.strategy';
 import { Response } from 'node_modules/@types/express';
 
 @Injectable()

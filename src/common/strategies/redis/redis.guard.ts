@@ -9,7 +9,7 @@ import {
   UnauthorizedException,
 } from 'node_modules/@nestjs/common';
 import { Request } from 'node_modules/@types/express';
-import { JwtStrategy } from '../token.strategy/jwt.strategy';
+import { JwtStrategy } from '../token/jwt.strategy';
 import Redis from 'node_modules/ioredis/built';
 
 @Injectable()
