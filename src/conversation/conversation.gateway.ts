@@ -1,11 +1,12 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
+
 import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { ConversationService } from './conversation.service';
 import { Server, Socket } from 'node_modules/socket.io/dist';
 
+
 @WebSocketGateway(80, { namespace: 'freelancer-client' })
 
+// @UseGuards(AuthGuard) use one for websocket
 export class ConversationGateway {
   
   constructor(private readonly conversationService : ConversationService){}
@@ -25,7 +26,7 @@ export class ConversationGateway {
     @MessageBody() conversationId: number,
     @ConnectedSocket() client : Socket
   ){
-    await client.join(`conversation ${conversationId}`)
+    await client.join(`conversation_${conversationId}`)
     console.log(`${client.id} joined room conversation ${conversationId}`)
   }
 
@@ -34,9 +35,9 @@ export class ConversationGateway {
     @MessageBody()
     { conversationId, senderId, content , participantId }: { conversationId: number;  content: string ; senderId: number ; participantId : number},
   ) {
+    
     const message = await this.conversationService.createMessage(conversationId,  content , senderId, participantId);
 
-    // Broadcast to all users in the same conversation
     this.server.to(`conversation_${conversationId}`).emit('newMessage', message);
   }
 }

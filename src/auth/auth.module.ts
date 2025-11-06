@@ -67,6 +67,6 @@ import { CookiesStrategy } from '../common/strategies/token/cookies.strategy';
       },
     },
   ],
-  exports: [JwtStrategy, GoogleStrategy],
+  exports: [JwtStrategy, GoogleStrategy,'REDIS_CLIENT'],
 })
 export class AuthModule {}
