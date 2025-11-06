@@ -4,21 +4,26 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { InjectRepository } from 'node_modules/@nestjs/typeorm';
-import { Repository } from 'node_modules/typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { Offre } from 'src/offer/offer.entity';
 import { User } from 'src/user/user.entity';
 import { Conversation } from './entity/conversation.entity';
+import { Message } from './entity/message.entity';
 
 @Injectable()
 export class ConversationService {
   constructor(
     @InjectRepository(Offre)
     private readonly offerRepository: Repository<Offre>,
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
     @InjectRepository(Conversation)
     private readonly conversationRepository: Repository<Conversation>,
+    @InjectRepository(Message)
+    private readonly messageRepository: Repository<Message>,
   ) {}
+
   async openConversation(
     offerId: number,
     clientId: number,
@@ -28,14 +33,17 @@ export class ConversationService {
       where: { id: offerId },
       relations: ['user', 'enroledUsers'],
     });
-    if (!offer) throw new NotFoundException('cannot find the offer');
+
+    if (!offer) throw new NotFoundException('Offer not found');
     if (offer.user.id !== clientId)
       throw new ForbiddenException('You are not the owner of this offer');
+
     const freelancer = offer.enroledUsers.find((u) => u.id === freelancerId);
     if (!freelancer)
       throw new ForbiddenException(
-        'this freelancer did not enroll in this offer',
+        'This freelancer did not enroll in this offer',
       );
+
     let conversation = await this.conversationRepository.findOne({
       where: {
         offre: { id: offerId },
@@ -45,13 +53,53 @@ export class ConversationService {
     });
 
     if (conversation)
-      throw new BadRequestException('this conversation already existe');
+      throw new BadRequestException('This conversation already exists');
+
     conversation = this.conversationRepository.create({
-        creator : offer.user,
-        participant : freelancer,
-        offre : offer
+      creator: offer.user,
+      participant: freelancer,
+      offre: offer,
     });
-    await this.conversationRepository.save(conversation)
-    return conversation
+
+    await this.conversationRepository.save(conversation);
+    return conversation;
+  }
+
+  async createMessage(
+    conversationId: number,
+    content: string,
+    senderId: number,
+    participantId: number,
+  ) {
+    const conversation = await this.conversationRepository.findOne({
+      where: { id: conversationId },
+      relations: ['creator', 'participant'],
+    });
+
+    if (!conversation) throw new NotFoundException('Conversation not found');
+
+    if (
+      ![conversation.creator.id, conversation.participant.id].includes(senderId)
+    )
+      throw new ForbiddenException('You are not part of this conversation');
+
+    const sender = await this.userRepository.findOne({
+      where: { id: senderId },
+    });
+    if (!sender) throw new NotFoundException('cannot found the sender')
+    const participant = await this.userRepository.findOne({
+      where: { id: participantId },
+    });
+    if (!participant) throw new NotFoundException('cannot found the participant')
+
+    const message = this.messageRepository.create({
+      content,
+      conversation,
+      creator: sender,
+      participant,
+    });
+
+    const savedMessage = await this.messageRepository.save(message);
+    return savedMessage;
   }
 }
