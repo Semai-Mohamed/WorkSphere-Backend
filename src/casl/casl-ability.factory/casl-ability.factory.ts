@@ -43,11 +43,10 @@ export class CaslAbilityFactory {
     can('read', Portfolio);
     can('read', Conversation, {
       $or: [{ creator: { id: user.id } }, { participant: { id: user.id } }],
-    } as MongoQuery<Conversation>);
+    } as any);
     can('read', Message, {
-
       $or: [{ creator: { id: user.id } }, { participant: { id: user.id } }],
-    } as MongoQuery<Message>);
+    } as any);
     can('create', Portfolio);
     can('update', Portfolio, { 'user.id': user.id } as any);
     can('update', User, { id: user.id });

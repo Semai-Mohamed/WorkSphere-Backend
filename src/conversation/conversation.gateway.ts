@@ -25,7 +25,7 @@ export class ConversationGateway {
 
   @SubscribeMessage('joinConversation')
   async onJoin(
-    @MessageBody() conversationId: number,
+    @MessageBody() {conversationId},
     @ConnectedSocket() client : Socket
   ){
    
@@ -40,7 +40,6 @@ export class ConversationGateway {
   ) {
     
     const message = await this.conversationService.createMessage(conversationId,  content , senderId, participantId);
-
     this.server.to(`conversation_${conversationId}`).emit('newMessage', message);
   }
 }

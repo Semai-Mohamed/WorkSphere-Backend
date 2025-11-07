@@ -3,6 +3,7 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -101,5 +102,14 @@ export class ConversationService {
 
     const savedMessage = await this.messageRepository.save(message);
     return savedMessage;
+  }
+
+  async getMessageByConversation(conversationId : number,userId : number){
+   const conversation = await this.conversationRepository.findOne({where : {id : conversationId},relations : ['creator','participant']})
+   if (!conversation) throw new NotFoundException('cannot find this conversation')
+    if(conversation.creator.id !== userId && conversation.participant.id !==userId) throw new UnauthorizedException("you cannot perform this action")
+   const  messages = await this.messageRepository.find({where : {conversation : {id : conversationId}},order : {createdAt : 'ASC'}})
+   if (!messages) throw new NotFoundException('cannot get messages with this conversationId')
+    return messages
   }
 }

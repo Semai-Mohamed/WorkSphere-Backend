@@ -1,4 +1,4 @@
-import { Controller, Param, Post } from '@nestjs/common';
+import { Controller, Get, Param, Post } from '@nestjs/common';
 import { ConversationService } from './conversation.service';
 import { CheckPolicies } from 'src/casl/policy/policy.metadata';
 import { Conversation } from './entity/conversation.entity';
@@ -8,7 +8,7 @@ import { GetUserId } from 'src/common/user.decorator';
 export class ConversationController {
     constructor(private readonly conversationService : ConversationService){}
 
-    @Post('open/:offerId/:freelancerId')
+    @Post(':offerId/:freelancerId')
     @CheckPolicies('create',Conversation)
     async openConversation(
        @Param('offerId') offerId : number,
@@ -16,5 +16,10 @@ export class ConversationController {
        @GetUserId() clientId : number
     ){
         return this.conversationService.openConversation(offerId,clientId,freelancerId)
+    }
+
+    @Get(':id')
+    async getMessages(@Param('id') conversationId : number , @GetUserId() userId : number){ 
+        return this.conversationService.getMessageByConversation(conversationId,userId)
     }
 }

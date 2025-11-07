@@ -8,9 +8,11 @@ import { User } from 'src/user/user.entity';
 import { Offre } from 'src/offer/offer.entity';
 import { AuthModule } from 'src/auth/auth.module';
 import { WsAuthGuard } from './ws.auth.guard ';
+import { ConversationController } from './conversation.controller';
 
 @Module({
   imports : [TypeOrmModule.forFeature([Message,Conversation,User,Offre]),AuthModule],
   providers: [ConversationService, ConversationGateway,WsAuthGuard],
+  controllers : [ConversationController]
 })
 export class ConversationModule {}
