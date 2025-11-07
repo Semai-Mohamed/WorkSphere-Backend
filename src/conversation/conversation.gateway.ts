@@ -2,11 +2,13 @@
 import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { ConversationService } from './conversation.service';
 import { Server, Socket } from 'node_modules/socket.io/dist';
+import { UseGuards } from 'node_modules/@nestjs/common';
+import { WsAuthGuard } from './ws.auth.guard ';
 
 
 @WebSocketGateway(80, { namespace: 'freelancer-client' })
 
-// @UseGuards(AuthGuard) use one for websocket
+@UseGuards(WsAuthGuard)
 export class ConversationGateway {
   
   constructor(private readonly conversationService : ConversationService){}
@@ -26,6 +28,7 @@ export class ConversationGateway {
     @MessageBody() conversationId: number,
     @ConnectedSocket() client : Socket
   ){
+   
     await client.join(`conversation_${conversationId}`)
     console.log(`${client.id} joined room conversation ${conversationId}`)
   }
