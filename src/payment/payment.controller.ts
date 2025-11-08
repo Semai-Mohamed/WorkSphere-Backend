@@ -8,9 +8,8 @@ import {
   Headers,
   BadRequestException,
   NotFoundException,
-  
 } from '@nestjs/common';
-import type {RawBodyRequest} from '@nestjs/common'
+import type { RawBodyRequest } from '@nestjs/common';
 import type { Request } from 'express';
 import Stripe from 'stripe';
 import { ConfigService } from '@nestjs/config';
@@ -44,7 +43,7 @@ export class StripeWebhookController {
     const endpointSecret =
       this.configService.get('STRIPE_WEBHOOK_SECRET') || '';
     let event: Stripe.Event;
-  
+
     try {
       event = this.stripe.webhooks.constructEvent(
         req['rawBody'] as Buffer,
@@ -57,8 +56,8 @@ export class StripeWebhookController {
 
     switch (event.type) {
       case 'payment_intent.succeeded':
-        const paymentIntent = event.data.object ;
-        
+        const paymentIntent = event.data.object;
+
         await this.paymentService.markAsPaid(
           paymentIntent.metadata.offerId,
           paymentIntent.metadata.freelancerId,
@@ -76,18 +75,23 @@ export class StripeWebhookController {
 
         await this.paymentService.markAsFinshed(transfer.metadata.offerId);
         break;
-      
+
       case 'account.updated':
-        const account = event.data.object 
-        if(!account.details_submitted){
-          return 'not all details submitted yet'
+        const account = event.data.object;
+        if (!account.details_submitted) {
+          return 'not all details submitted yet';
         }
-        
-        if(!account.metadata) throw new NotFoundException("Cannot find the user metadata")
-        const freelancerId = account.metadata.userId
-        const offerId = account.metadata.offerId
-        
-        await this.paymentService.linkStripeAccount(account.id,freelancerId,offerId)
+
+        if (!account.metadata)
+          throw new NotFoundException('Cannot find the user metadata');
+        const freelancerId = account.metadata.userId;
+        const offerId = account.metadata.offerId;
+
+        await this.paymentService.linkStripeAccount(
+          account.id,
+          freelancerId,
+          offerId,
+        );
         break;
 
       default:
@@ -96,6 +100,4 @@ export class StripeWebhookController {
 
     return { received: true };
   }
-
-  
 }

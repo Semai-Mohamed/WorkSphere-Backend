@@ -96,8 +96,7 @@ export class OfferController {
   async unacceptUser(@Param('id') offerId: number) {
     return this.offerService.unacceptOffer(offerId);
   }
-   
-  
+
   @Patch('approveFinished/:id')
   async approveOffer(
     @Param('id') offerId: number,
@@ -105,14 +104,14 @@ export class OfferController {
   ) {
     return this.offerService.approveFinishedByOwner(offerId, userId);
   }
-  
+
   @CheckPolicies('update', User)
   @Post('payment/account/:userId/:offerId')
   async createStripeAccount(
     @Param('userId') userId: number,
     @Param('offerId') offerId: number,
   ) {
-    console.log(userId,offerId)
+    console.log(userId, offerId);
     const payment = await this.paymentService.createFreelancerAccount(
       userId,
       offerId,

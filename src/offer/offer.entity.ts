@@ -54,8 +54,6 @@ export class Offre {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  
-
   @Column({ nullable: true })
   paymentIntentId?: string;
 
@@ -68,3 +66,17 @@ export class Offre {
   @Column({ default: false })
   freelancerConfirmed: boolean;
 }
+/**
+ 
+- [Project Structure](#project-structure)
+-  [Technologies](#technologies)
+- [Installation](#installation)
+- [Environment Variables](#environment-variables)
+- [Scripts](#scripts)
+- [Running the Project](#running-the-project)
+- [Linting & Formatting](#linting--formatting)
+- [Features](#features)
+- [Security & Validation](#security--validation)
+- [License](#license)
+API Documentation
+ */

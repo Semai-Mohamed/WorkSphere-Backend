@@ -6,20 +6,30 @@ import { GetUserId } from 'src/common/user.decorator';
 
 @Controller('conversation')
 export class ConversationController {
-    constructor(private readonly conversationService : ConversationService){}
+  constructor(private readonly conversationService: ConversationService) {}
 
-    @Post(':offerId/:freelancerId')
-    @CheckPolicies('create',Conversation)
-    async openConversation(
-       @Param('offerId') offerId : number,
-       @Param('freelancerId') freelancerId : number,
-       @GetUserId() clientId : number
-    ){
-        return this.conversationService.openConversation(offerId,clientId,freelancerId)
-    }
+  @Post(':offerId/:freelancerId')
+  @CheckPolicies('create', Conversation)
+  async openConversation(
+    @Param('offerId') offerId: number,
+    @Param('freelancerId') freelancerId: number,
+    @GetUserId() clientId: number,
+  ) {
+    return this.conversationService.openConversation(
+      offerId,
+      clientId,
+      freelancerId,
+    );
+  }
 
-    @Get(':id')
-    async getMessages(@Param('id') conversationId : number , @GetUserId() userId : number){ 
-        return this.conversationService.getMessageByConversation(conversationId,userId)
-    }
+  @Get(':id')
+  async getMessages(
+    @Param('id') conversationId: number,
+    @GetUserId() userId: number,
+  ) {
+    return this.conversationService.getMessageByConversation(
+      conversationId,
+      userId,
+    );
+  }
 }

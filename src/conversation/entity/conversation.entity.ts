@@ -13,14 +13,14 @@ import { Offre } from 'src/offer/offer.entity';
 export class Conversation {
   @PrimaryGeneratedColumn()
   id: number;
-  
+
   @JoinColumn()
   @ManyToOne(() => User)
   creator: User;
 
   @JoinColumn()
-  @ManyToOne(() => Offre,{eager : true} )
-  offre : Offre
+  @ManyToOne(() => Offre, { eager: true })
+  offre: Offre;
 
   @JoinColumn()
   @ManyToOne(() => User, { onDelete: 'CASCADE' })

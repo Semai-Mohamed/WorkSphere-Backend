@@ -13,7 +13,7 @@ import { NotificationModule } from 'src/notification/notification.module';
     TypeOrmModule.forFeature([User, Offre]),
     CaslModule,
     forwardRef(() => PaymentModule),
-    NotificationModule
+    NotificationModule,
   ],
   controllers: [OfferController],
   providers: [OfferService],

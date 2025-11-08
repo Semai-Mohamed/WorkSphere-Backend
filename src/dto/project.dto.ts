@@ -28,11 +28,10 @@ export class CreateProjectDto {
 }
 export class UpdateProjectDto extends PartialType(
   PickType(CreateProjectDto, [
-  'title',
-  'description',
-  'link',
-  'category',
-  'technologies',
-] as const) 
-){}
-
+    'title',
+    'description',
+    'link',
+    'category',
+    'technologies',
+  ] as const),
+) {}

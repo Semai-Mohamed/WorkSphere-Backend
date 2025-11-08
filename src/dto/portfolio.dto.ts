@@ -22,9 +22,9 @@ export class CreatePortfolioDto {
 }
 export class UpdatePortfolio extends PartialType(
   PickType(CreatePortfolioDto, [
-  'mobile',
-  'description',
-  'portfolioLink',
-  'location',
-] as const)
+    'mobile',
+    'description',
+    'portfolioLink',
+    'location',
+  ] as const),
 ) {}

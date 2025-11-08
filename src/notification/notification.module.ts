@@ -8,9 +8,9 @@ import { User } from 'src/user/user.entity';
 import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
-  imports : [TypeOrmModule.forFeature([Notification,User]),AuthModule],
+  imports: [TypeOrmModule.forFeature([Notification, User]), AuthModule],
   controllers: [NotificationController],
   providers: [NotificationService, NotificationGateway],
-  exports : [NotificationService,NotificationGateway]
+  exports: [NotificationService, NotificationGateway],
 })
 export class NotificationModule {}

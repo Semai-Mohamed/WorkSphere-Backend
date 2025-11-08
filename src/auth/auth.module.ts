@@ -24,7 +24,7 @@ import { CookiesStrategy } from '../common/strategies/token/cookies.strategy';
   imports: [
     TypeOrmModule.forFeature([User]),
     forwardRef(() => UserModule),
-    // نستحق هذي فل مين يكون عندي بزاف microservices مشي multiple app instance 
+    // نستحق هذي فل مين يكون عندي بزاف microservices مشي multiple app instance
     ClientsModule.register([
       {
         name: 'Client_REDIS_SERVICE',
@@ -67,6 +67,6 @@ import { CookiesStrategy } from '../common/strategies/token/cookies.strategy';
       },
     },
   ],
-  exports: [JwtStrategy, GoogleStrategy,'REDIS_CLIENT'],
+  exports: [JwtStrategy, GoogleStrategy, 'REDIS_CLIENT'],
 })
 export class AuthModule {}

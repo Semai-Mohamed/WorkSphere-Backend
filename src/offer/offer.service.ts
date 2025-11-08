@@ -9,10 +9,7 @@ import { InjectRepository } from 'node_modules/@nestjs/typeorm';
 import { Offre } from './offer.entity';
 import { DataSource, Repository } from 'node_modules/typeorm';
 import { User } from 'src/user/user.entity';
-import {
-  CreateOffreDto,
-  UpdateOffreDto,
-} from 'src/dto/offer.service.dto';
+import { CreateOffreDto, UpdateOffreDto } from 'src/dto/offer.service.dto';
 import { RequestWithUser } from 'src/dto/auth.dto';
 import { PaymentService } from 'src/payment/payment.service';
 import { NotificationService } from 'src/notification/notification.service';
@@ -25,7 +22,7 @@ export class OfferService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly dataSource: DataSource,
     private readonly paymentService: PaymentService,
-    private readonly notificationService : NotificationService
+    private readonly notificationService: NotificationService,
   ) {}
 
   async AddOffer(dto: CreateOffreDto, req: RequestWithUser) {
@@ -91,21 +88,22 @@ export class OfferService {
       if (!user) throw new BadRequestException('User not found');
       if (offer.enroledUsers.some((u) => u.id === userId))
         throw new BadRequestException('Already enrolled');
-      if(!user.stripeAccountId) throw new BadRequestException('Stripe account is required')
+      if (!user.stripeAccountId)
+        throw new BadRequestException('Stripe account is required');
       offer.enroledUsers.push(user);
       user.enrolledOffres.push(offer);
 
       await userRepo.save(user);
       await offerRepo.save(offer);
-      
+
       await this.notificationService.createNotification(
         {
-          message : `User ${user.id} enrolled in your offer`,
-          purpose : 'NEW ENRROLLEMENT'
+          message: `User ${user.id} enrolled in your offer`,
+          purpose: 'NEW ENRROLLEMENT',
         },
-        offer.user.id
-      )
-      return { message: 'User enrolled successfully'};
+        offer.user.id,
+      );
+      return { message: 'User enrolled successfully' };
     });
   }
 
@@ -155,23 +153,25 @@ export class OfferService {
     return await this.dataSource.transaction(async (manager) => {
       const offerRepo = manager.getRepository(Offre);
       const userRepo = manager.getRepository(User);
-      const offer = await offerRepo.findOne({ where: { id: offerId } ,relations : ['user','enroledUsers']});
+      const offer = await offerRepo.findOne({
+        where: { id: offerId },
+        relations: ['user', 'enroledUsers'],
+      });
       const user = await userRepo.findOne({ where: { id: userId } });
 
       if (!user) throw new NotFoundException('User not found');
       if (offer?.accepted)
         throw new BadRequestException('Offer already accepted by a user');
-      
+
       if (!offer?.enroledUsers.some((u) => u.id === userId))
         throw new BadRequestException('User is not enrolled in this offer');
-      
+
       const payment = await this.paymentService.createPaymentIntent(
         offerId,
         offer.user.id,
-        userId
+        userId,
       );
-      
-       
+
       return { message: 'User accepted successfully', payment };
     });
   }
@@ -194,20 +194,22 @@ export class OfferService {
     return await this.dataSource.transaction(async (manager) => {
       const offerRepo = manager.getRepository(Offre);
       const userRepo = manager.getRepository(User);
-    
-      const offer = await offerRepo.findOne({ where: { id: offerId } ,relations : ['user','accepted']});
+
+      const offer = await offerRepo.findOne({
+        where: { id: offerId },
+        relations: ['user', 'accepted'],
+      });
       const user = await userRepo.findOne({ where: { id: userId } });
 
       if (!user) throw new NotFoundException('User not found');
       if (offer?.user.id !== userId || !offer?.accepted)
         throw new BadRequestException(
           'Only the owner can approve the offer if there is an accepted user',
-        )
+        );
 
       const payment = await this.paymentService.releasePayment(offerId);
 
       return { message: 'Offer approved successfully', payment };
     });
   }
-
 }

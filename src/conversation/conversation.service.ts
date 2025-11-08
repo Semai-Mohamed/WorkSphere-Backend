@@ -25,7 +25,7 @@ export class ConversationService {
     private readonly conversationRepository: Repository<Conversation>,
     @InjectRepository(Message)
     private readonly messageRepository: Repository<Message>,
-    private readonly notificationService : NotificationService
+    private readonly notificationService: NotificationService,
   ) {}
 
   async openConversation(
@@ -71,7 +71,7 @@ export class ConversationService {
 
   async createMessage(
     conversationId: number,
-    {content}: CreateMessageDto,
+    { content }: CreateMessageDto,
     senderId: number,
     participantId: number,
   ) {
@@ -90,11 +90,12 @@ export class ConversationService {
     const sender = await this.userRepository.findOne({
       where: { id: senderId },
     });
-    if (!sender) throw new NotFoundException('cannot found the sender')
+    if (!sender) throw new NotFoundException('cannot found the sender');
     const participant = await this.userRepository.findOne({
       where: { id: participantId },
     });
-    if (!participant) throw new NotFoundException('cannot found the participant')
+    if (!participant)
+      throw new NotFoundException('cannot found the participant');
 
     const message = this.messageRepository.create({
       content,
@@ -102,24 +103,38 @@ export class ConversationService {
       creator: sender,
       participant,
     });
-    if(!message) throw new BadRequestException('cannot create this message')
+    if (!message) throw new BadRequestException('cannot create this message');
     await this.notificationService.createNotification(
-        {
-          message : `User ${sender.firstName +' '+ sender.lastName} send you a new message`,
-          purpose : 'NEW MESSAGE'
-        },
-        participant.id
-      )
+      {
+        message: `User ${sender.firstName + ' ' + sender.lastName} send you a new message`,
+        purpose: 'NEW MESSAGE',
+      },
+      participant.id,
+    );
     const savedMessage = await this.messageRepository.save(message);
     return savedMessage;
   }
 
-  async getMessageByConversation(conversationId : number,userId : number){
-   const conversation = await this.conversationRepository.findOne({where : {id : conversationId},relations : ['creator','participant']})
-   if (!conversation) throw new NotFoundException('cannot find this conversation')
-    if(conversation.creator.id !== userId && conversation.participant.id !==userId) throw new UnauthorizedException("you cannot perform this action")
-   const  messages = await this.messageRepository.find({where : {conversation : {id : conversationId}},order : {createdAt : 'ASC'}})
-   if (!messages) throw new NotFoundException('cannot get messages with this conversationId')
-    return messages
+  async getMessageByConversation(conversationId: number, userId: number) {
+    const conversation = await this.conversationRepository.findOne({
+      where: { id: conversationId },
+      relations: ['creator', 'participant'],
+    });
+    if (!conversation)
+      throw new NotFoundException('cannot find this conversation');
+    if (
+      conversation.creator.id !== userId &&
+      conversation.participant.id !== userId
+    )
+      throw new UnauthorizedException('you cannot perform this action');
+    const messages = await this.messageRepository.find({
+      where: { conversation: { id: conversationId } },
+      order: { createdAt: 'ASC' },
+    });
+    if (!messages)
+      throw new NotFoundException(
+        'cannot get messages with this conversationId',
+      );
+    return messages;
   }
 }

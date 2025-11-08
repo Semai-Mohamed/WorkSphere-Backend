@@ -8,7 +8,11 @@ import { OfferModule } from 'src/offer/offer.module';
 import { NotificationModule } from 'src/notification/notification.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Offre, User]), forwardRef(() => OfferModule),NotificationModule],
+  imports: [
+    TypeOrmModule.forFeature([Offre, User]),
+    forwardRef(() => OfferModule),
+    NotificationModule,
+  ],
   providers: [PaymentService],
   controllers: [StripeWebhookController],
   exports: [PaymentService],

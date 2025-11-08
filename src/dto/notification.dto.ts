@@ -2,7 +2,6 @@ import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { ApiProperty } from 'node_modules/@nestjs/swagger/dist';
 
 export class CreateNotificationDto {
-
   @ApiProperty()
   @IsNotEmpty({ message: 'Message is required' })
   @IsString()
@@ -14,9 +13,9 @@ export class CreateNotificationDto {
   purpose: string;
 }
 
-export class CreateUserIdDto{
+export class CreateUserIdDto {
   @ApiProperty()
-  @IsNotEmpty({message : 'User ID is required'})
+  @IsNotEmpty({ message: 'User ID is required' })
   @IsNumber()
-  userId : number
+  userId: number;
 }

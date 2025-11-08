@@ -1,4 +1,3 @@
-
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Transport } from '@nestjs/microservices';
@@ -10,40 +9,41 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AsyncApiDocumentBuilder, AsyncApiModule } from 'nestjs-asyncapi';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule,{rawBody:true});
-  
+  const app = await NestFactory.create(AppModule, { rawBody: true });
+
   const config = new DocumentBuilder()
-  .setTitle('WorkSpher')
-  .setDescription('API for the Workspher application')
-  .setVersion('1.0')
-  .addTag('Platform')
-  .build()
-  const documentFactory = () => SwaggerModule.createDocument(app,config)
-  SwaggerModule.setup('api',app,documentFactory)
+    .setTitle('WorkSpher')
+    .setDescription('API for the Workspher application')
+    .setVersion('1.0')
+    .addTag('Platform')
+    .build();
+  const documentFactory = () => SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, documentFactory);
 
   const asyncApiOption = new AsyncApiDocumentBuilder()
     .setTitle('WebSocket API')
     .setDescription('Notification and Conversation WebSocket APIs')
     .setVersion('1.0')
-    .setContact('WorkSpher', 'https://github.com/Semai-Mohamed', 'WorkSpher@gmail.com')
+    .setContact(
+      'WorkSpher',
+      'https://github.com/Semai-Mohamed',
+      'WorkSpher@gmail.com',
+    )
     .addServer('notification-ws', {
       url: 'ws://localhost:60/notification',
       protocol: 'socket.io',
-      description: 'Notification WebSocket server'
+      description: 'Notification WebSocket server',
     })
     .addServer('conversation-ws', {
       url: 'ws://localhost:80/conversation',
       protocol: 'socket.io',
-      description: 'Conversation WebSocket server'
-
+      description: 'Conversation WebSocket server',
     })
-    
 
-    .build();  
-    const document = AsyncApiModule.createDocument(app, asyncApiOption);
-    await AsyncApiModule.setup('/asyncapi', app, document);
+    .build();
+  const document = AsyncApiModule.createDocument(app, asyncApiOption);
+  await AsyncApiModule.setup('/asyncapi', app, document);
 
-  
   app.use(cookieParser());
 
   app.useGlobalPipes(
@@ -55,7 +55,6 @@ async function bootstrap() {
   );
   app.useGlobalFilters(new AllExceptionsFilter());
 
-
   // Attach microservice
   app.connectMicroservice({
     transport: Transport.REDIS,
@@ -66,9 +65,9 @@ async function bootstrap() {
   });
 
   // Redis Adapter
-  const redisIoAdapter = new RedisIoAdapter(app)
-  await redisIoAdapter.connectToRedis()
-  app.useWebSocketAdapter(redisIoAdapter)
+  const redisIoAdapter = new RedisIoAdapter(app);
+  await redisIoAdapter.connectToRedis();
+  app.useWebSocketAdapter(redisIoAdapter);
 
   await app.startAllMicroservices();
   await app.listen(3000);

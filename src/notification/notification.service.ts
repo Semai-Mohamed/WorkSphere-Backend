@@ -20,7 +20,7 @@ export class NotificationService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     @Inject(forwardRef(() => NotificationGateway))
-    private readonly notificationGateway : NotificationGateway
+    private readonly notificationGateway: NotificationGateway,
   ) {}
 
   async createNotification(dto: CreateNotificationDto, userId: number) {
@@ -32,7 +32,7 @@ export class NotificationService {
     });
     if (!notification)
       throw new BadRequestException('failed to create this notification');
-    this.notificationGateway.sendNotification(user.id , notification)
+    this.notificationGateway.sendNotification(user.id, notification);
     return await this.notificationRepository.save(notification);
   }
   async getAllNotifications(userId: number) {
@@ -41,25 +41,35 @@ export class NotificationService {
     });
     if (!notifications)
       throw new NotFoundException('cannot find notifications with this userId');
-    return notifications
+    return notifications;
   }
-  async getUncheckedNotifications(userId : number){
-    const notifications = await this.notificationRepository.find({where : {user : {id : userId},checked : false}})
-    if(!notifications)
-        throw new NotFoundException('there no unchecked notification with this userId')
-    return notifications
-  }
-
-  async removeNotification(notificationId : number,userId : number){
-    const notification = await this.notificationRepository.findOne({where : {id : notificationId,user : {id : userId}}})
-    if(!notification) throw new NotFoundException('cannot find this notification')
-    await this.notificationRepository.remove(notification)
+  async getUncheckedNotifications(userId: number) {
+    const notifications = await this.notificationRepository.find({
+      where: { user: { id: userId }, checked: false },
+    });
+    if (!notifications)
+      throw new NotFoundException(
+        'there no unchecked notification with this userId',
+      );
+    return notifications;
   }
 
-  async markAsChecked(notificationId : number , userId : number){
-    const notification = await this.notificationRepository.findOne({where : {id : notificationId,user : {id : userId}}})
-    if(!notification) throw new NotFoundException('cannot find this notification')
-    notification.checked = true
-    return await this.notificationRepository.save(notification)
+  async removeNotification(notificationId: number, userId: number) {
+    const notification = await this.notificationRepository.findOne({
+      where: { id: notificationId, user: { id: userId } },
+    });
+    if (!notification)
+      throw new NotFoundException('cannot find this notification');
+    await this.notificationRepository.remove(notification);
+  }
+
+  async markAsChecked(notificationId: number, userId: number) {
+    const notification = await this.notificationRepository.findOne({
+      where: { id: notificationId, user: { id: userId } },
+    });
+    if (!notification)
+      throw new NotFoundException('cannot find this notification');
+    notification.checked = true;
+    return await this.notificationRepository.save(notification);
   }
 }

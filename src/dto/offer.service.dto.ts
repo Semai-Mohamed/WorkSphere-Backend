@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsArray} from 'class-validator';
+import { IsNotEmpty, IsString, IsArray } from 'class-validator';
 import { PartialType, PickType } from 'node_modules/@nestjs/swagger';
 import { ApiProperty } from 'node_modules/@nestjs/swagger/dist';
 
@@ -32,10 +32,8 @@ export class CreateOffreDto {
   @IsArray()
   @IsString({ each: true })
   technologies: string[];
-
-  
 }
- 
+
 export class UpdateOffreDto extends PartialType(
   PickType(CreateOffreDto, [
     'service',

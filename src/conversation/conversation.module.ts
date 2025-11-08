@@ -12,9 +12,13 @@ import { ConversationController } from './conversation.controller';
 import { NotificationModule } from 'src/notification/notification.module';
 
 @Module({
-  imports : [TypeOrmModule.forFeature([Message,Conversation,User,Offre]),AuthModule,NotificationModule],
-  providers: [ConversationService, ConversationGateway,WsAuthGuard],
-  controllers : [ConversationController],
-  exports : [ConversationGateway,ConversationService]
+  imports: [
+    TypeOrmModule.forFeature([Message, Conversation, User, Offre]),
+    AuthModule,
+    NotificationModule,
+  ],
+  providers: [ConversationService, ConversationGateway, WsAuthGuard],
+  controllers: [ConversationController],
+  exports: [ConversationGateway, ConversationService],
 })
 export class ConversationModule {}

@@ -1,4 +1,4 @@
-import { ApiProperty } from "node_modules/@nestjs/swagger/dist";
+import { ApiProperty } from 'node_modules/@nestjs/swagger/dist';
 
 export class JoinConversationDto {
   @ApiProperty()
