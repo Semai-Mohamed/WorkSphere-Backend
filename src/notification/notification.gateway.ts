@@ -22,8 +22,8 @@ export class NotificationGateway {
     await client.join(`notification_${userId}`)
   }
 
-  sendNotification(userId :number , payload : any){
-   this.server.to(`user_${userId}`).emit('notification',payload)
+  sendNotification(userId :number , notification : any){
+   this.server.to(`user_${userId}`).emit('notification',notification)
   }
    
   sendGlobalNotification(payload: any) {

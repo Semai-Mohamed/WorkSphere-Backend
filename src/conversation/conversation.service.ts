@@ -11,6 +11,7 @@ import { Offre } from 'src/offer/offer.entity';
 import { User } from 'src/user/user.entity';
 import { Conversation } from './entity/conversation.entity';
 import { Message } from './entity/message.entity';
+import { NotificationService } from 'src/notification/notification.service';
 
 @Injectable()
 export class ConversationService {
@@ -23,6 +24,7 @@ export class ConversationService {
     private readonly conversationRepository: Repository<Conversation>,
     @InjectRepository(Message)
     private readonly messageRepository: Repository<Message>,
+    private readonly notificationService : NotificationService
   ) {}
 
   async openConversation(
@@ -99,7 +101,14 @@ export class ConversationService {
       creator: sender,
       participant,
     });
-
+    if(!message) throw new BadRequestException('cannot create this message')
+    await this.notificationService.createNotification(
+        {
+          message : `User ${sender.firstName +' '+ sender.lastName} send you a new message`,
+          purpose : 'NEW MESSAGE'
+        },
+        participant.id
+      )
     const savedMessage = await this.messageRepository.save(message);
     return savedMessage;
   }

@@ -8,6 +8,7 @@ import { Repository } from 'node_modules/typeorm';
 import { CreateNotificationDto } from 'src/dto/notification.dto';
 import { User } from 'src/user/user.entity';
 import { Notification } from './notification.entity';
+import { NotificationGateway } from './notification.gateway';
 
 @Injectable()
 export class NotificationService {
@@ -16,6 +17,7 @@ export class NotificationService {
     private readonly notificationRepository: Repository<Notification>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly notificationGateway : NotificationGateway
   ) {}
 
   async createNotification(dto: CreateNotificationDto, userId: number) {
@@ -27,6 +29,7 @@ export class NotificationService {
     });
     if (!notification)
       throw new BadRequestException('failed to create this notification');
+    this.notificationGateway.sendNotification(user.id , notification)
     return await this.notificationRepository.save(notification);
   }
   async getAllNotifications(userId: number) {
@@ -44,8 +47,8 @@ export class NotificationService {
     return notifications
   }
 
-  async removeNotification(notificationId : number){
-    const notification = await this.notificationRepository.findOne({where : {id : notificationId}})
+  async removeNotification(notificationId : number,userId : number){
+    const notification = await this.notificationRepository.findOne({where : {id : notificationId,user : {id : userId}}})
     if(!notification) throw new NotFoundException('cannot find this notification')
     await this.notificationRepository.remove(notification)
   }

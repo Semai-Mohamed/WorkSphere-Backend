@@ -15,6 +15,7 @@ import {
 } from 'src/dto/offer.service.dto';
 import { RequestWithUser } from 'src/dto/auth.dto';
 import { PaymentService } from 'src/payment/payment.service';
+import { NotificationService } from 'src/notification/notification.service';
 
 @Injectable()
 export class OfferService {
@@ -24,6 +25,7 @@ export class OfferService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly dataSource: DataSource,
     private readonly paymentService: PaymentService,
+    private readonly notificationService : NotificationService
   ) {}
 
   async AddOffer(dto: CreateOffreDto, req: RequestWithUser) {
@@ -95,7 +97,14 @@ export class OfferService {
 
       await userRepo.save(user);
       await offerRepo.save(offer);
-
+      
+      await this.notificationService.createNotification(
+        {
+          message : `User ${user.id} enrolled in your offer`,
+          purpose : 'NEW ENRROLLEMENT'
+        },
+        offer.user.id
+      )
       return { message: 'User enrolled successfully'};
     });
   }
@@ -161,7 +170,8 @@ export class OfferService {
         offer.user.id,
         userId
       );
-
+      
+       
       return { message: 'User accepted successfully', payment };
     });
   }

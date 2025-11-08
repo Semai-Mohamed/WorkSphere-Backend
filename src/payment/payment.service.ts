@@ -7,6 +7,7 @@ import { InjectRepository } from 'node_modules/@nestjs/typeorm';
 import { Response } from 'node_modules/@types/express';
 import { Repository } from 'node_modules/typeorm/repository/Repository';
 import { Status } from 'src/dto/offer.service.dto';
+import { NotificationService } from 'src/notification/notification.service';
 import { Offre } from 'src/offer/offer.entity';
 import { User } from 'src/user/user.entity';
 import Stripe from 'stripe';
@@ -18,6 +19,7 @@ export class PaymentService {
     private readonly offerRepository: Repository<Offre>,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly configService: ConfigService,
+    private readonly notificationService : NotificationService
   ) {
     this.stripe = new Stripe(
       this.configService.get('STRIPE_SECRET_KEY') || '',
@@ -109,12 +111,19 @@ export class PaymentService {
     const id = parseInt(offerId);
     const UserId = parseInt(userId);
     const user = await this.userRepository.findOne({ where: { id: UserId } });
+    if(!user) throw new NotFoundException('User not found')
     const offer = await this.offerRepository.findOne({ where: { id: id } });
     if (!offer) throw new NotFoundException('Offer not found');
     offer.accepted = user;
     offer.status = Status.NOTFINISHED;
-    console.log(offer)
     await this.offerRepository.save(offer);
+    await this.notificationService.createNotification(
+        {
+          message : `you are accepted in ${offer.service}`,
+          purpose : 'OFFER APPROVED'
+        },
+        user.id
+      )
   }
 
   async markAsRefunded(offerId: string) {
