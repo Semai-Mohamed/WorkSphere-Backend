@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
 import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { ConversationService } from './conversation.service';
@@ -38,8 +39,12 @@ export class ConversationGateway {
     @MessageBody()
     { conversationId, senderId, content , participantId }: { conversationId: number;  content: string ; senderId: number ; participantId : number},
   ) {
-    
-    const message = await this.conversationService.createMessage(conversationId,  content , senderId, participantId);
+    try {
+    const message = await this.conversationService.createMessage(conversationId, content, senderId, participantId);
     this.server.to(`conversation_${conversationId}`).emit('newMessage', message);
+    return { success: true, message };
+  } catch (err) {
+    return { success: false, error: err };
+  }
   }
 }
