@@ -1,15 +1,17 @@
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { ApiProperty } from "node_modules/@nestjs/swagger/dist";
 
-export class CreateConversationDto {
-  @IsNotEmpty()
-  @IsNumber()
-  id: number;
+export class JoinConversationDto {
+  @ApiProperty()
+  conversationId: number;
+}
 
-  @IsNotEmpty()
-  @IsNumber()
-  creatorId: number;
-
-  @IsNotEmpty()
-  @IsNumber()
+export class SendMessageDto {
+  @ApiProperty()
+  conversationId: number;
+  @ApiProperty()
+  senderId: number;
+  @ApiProperty()
   participantId: number;
+  @ApiProperty()
+  content: string;
 }

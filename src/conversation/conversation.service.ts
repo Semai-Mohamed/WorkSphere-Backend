@@ -12,6 +12,7 @@ import { User } from 'src/user/user.entity';
 import { Conversation } from './entity/conversation.entity';
 import { Message } from './entity/message.entity';
 import { NotificationService } from 'src/notification/notification.service';
+import { CreateMessageDto } from 'src/dto/message.dto';
 
 @Injectable()
 export class ConversationService {
@@ -70,7 +71,7 @@ export class ConversationService {
 
   async createMessage(
     conversationId: number,
-    content: string,
+    {content}: CreateMessageDto,
     senderId: number,
     participantId: number,
   ) {

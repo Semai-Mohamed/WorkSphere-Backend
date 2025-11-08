@@ -5,16 +5,19 @@ import {
   IsString,
   Matches,
   MinLength,
-} from 'class-validator/types';
+} from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export interface RequestWithUser extends Request {
   user: any;
 }
 export class EmailCheckDto {
+  @ApiProperty({example : 'm_semai@estin.dz'})
   @IsEmail()
   email: string;
 }
 export class PasswordCheckDto {
+  @ApiProperty({example : 'Semai8_'})
   @IsNotEmpty({ message: 'Password cannot be empty' })
   @Matches(/(?=.*[A-Z])/, {
     message: 'Password must contain at least one uppercase letter',

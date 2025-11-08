@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { UserModule } from './user/user.module';
 import { User } from './user/user.entity';
 import { AuthModule } from './auth/auth.module';
@@ -21,6 +20,7 @@ import { Offre } from './offer/offer.entity';
 import { PortfolioModule } from './portfolio/portfolio.module';
 import { Portfolio } from './portfolio/portfolio.entity';
 import { PaymentModule } from './payment/payment.module';
+import { APP_GUARD } from 'node_modules/@nestjs/core';
 
 @Module({
   imports: [
@@ -43,6 +43,14 @@ import { PaymentModule } from './payment/payment.module';
       ],
       synchronize: true,
     }),
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          ttl: 6000,
+          limit: 10,
+        },
+      ],
+    }),
     UserModule,
     AuthModule,
     CaslModule,
@@ -54,6 +62,12 @@ import { PaymentModule } from './payment/payment.module';
     PaymentModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}

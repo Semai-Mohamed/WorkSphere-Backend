@@ -65,8 +65,8 @@ export class AuthController {
   @Public()
   @HttpCode(HttpStatus.OK)
   @Post('forgetPassword')
-  requestPasswordReset(@Body() { email }: EmailCheckDto) {
-    return this.authService.requestPasswordReset({ email });
+  requestPasswordReset(@Body() {email}: EmailCheckDto) {
+    return this.authService.requestPasswordReset({email});
   }
 
   @Public()
