@@ -17,10 +17,11 @@ export class NotificationController {
   }
 
   @Delete(':id')
-  removeNotifications(
+  async removeNotifications(
     @Param('id') notificationId: number,
     @GetUserId() userId: number,
   ) {
-    return this.notificationService.removeNotification(notificationId, userId);
+    await this.notificationService.removeNotification(notificationId, userId);
+    return 'Notification removed with successfully'
   }
 }

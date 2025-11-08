@@ -111,8 +111,8 @@ export class ConversationService {
       },
       participant.id,
     );
-    const savedMessage = await this.messageRepository.save(message);
-    return savedMessage;
+    await this.messageRepository.save(message);
+    return 'Message Created with successfully';
   }
 
   async getMessageByConversation(conversationId: number, userId: number) {

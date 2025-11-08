@@ -32,7 +32,8 @@ export class OfferService {
     });
 
     if (!offer) throw new BadRequestException('Cannot create offer');
-    return await this.offerRepository.save(offer);
+     await this.offerRepository.save(offer);
+     return 'Offer created with successfully'
   }
 
   async GetOffersByUser(userId: number) {
@@ -61,7 +62,8 @@ export class OfferService {
     });
     if (!updatedOffer)
       throw new BadRequestException('cannot update your offer');
-    return await this.offerRepository.save(updatedOffer);
+     await this.offerRepository.save(updatedOffer);
+     return 'Offer update with successfully '
   }
 
   async deleteOffer(offerId: number) {

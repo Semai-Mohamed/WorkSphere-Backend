@@ -25,7 +25,7 @@ export class ProjectService {
     dto: CreateProjectDto,
     userId: number,
     file: Express.Multer.File,
-  ): Promise<Project> {
+  ){
     let photoUrl: string | undefined = undefined;
     if (file) {
       photoUrl = (await this.cloudinaryStrategy.uploadFile(
@@ -39,7 +39,8 @@ export class ProjectService {
       photo: photoUrl,
     });
     if (!project) throw new BadRequestException('Cannot create project');
-    return this.projectRepository.save(project);
+    await this.projectRepository.save(project);
+    return 'Project create with succefully'
   }
 
   async getProjectsByUser(userId: number): Promise<Project[]> {
@@ -63,7 +64,7 @@ export class ProjectService {
     projectId: number,
     dto: UpdateProjectDto,
     file?: Express.Multer.File,
-  ): Promise<Project> {
+  ) {
     const project = await this.getProjectById(projectId);
     let photoUrl: string | undefined = undefined;
     if (file) {
@@ -79,11 +80,13 @@ export class ProjectService {
     });
     if (!updatedProject)
       throw new BadRequestException('cannot update your project');
-    return await this.projectRepository.save(updatedProject);
+    await this.projectRepository.save(updatedProject);
+    return 'Project updated with succefully'
   }
 
-  async deleteProject(projectId: number): Promise<void> {
+  async deleteProject(projectId: number): Promise<boolean> {
     const project = await this.getProjectById(projectId);
     await this.projectRepository.remove(project);
+    return true
   }
 }

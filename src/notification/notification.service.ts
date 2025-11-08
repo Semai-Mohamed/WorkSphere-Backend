@@ -33,7 +33,8 @@ export class NotificationService {
     if (!notification)
       throw new BadRequestException('failed to create this notification');
     this.notificationGateway.sendNotification(user.id, notification);
-    return await this.notificationRepository.save(notification);
+     await this.notificationRepository.save(notification);
+     return 'Notification created with successfully'
   }
   async getAllNotifications(userId: number) {
     const notifications = await this.notificationRepository.find({
@@ -70,6 +71,7 @@ export class NotificationService {
     if (!notification)
       throw new NotFoundException('cannot find this notification');
     notification.checked = true;
-    return await this.notificationRepository.save(notification);
+     await this.notificationRepository.save(notification);
+     return 'notification mark as read with successfully'
   }
 }

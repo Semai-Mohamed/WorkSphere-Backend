@@ -23,16 +23,17 @@ export class PortfolioController {
   @UseInterceptors(FileInterceptor('photo'))
   @CheckPolicies('create', Portfolio)
   @Post('create')
-  create(
+  async create(
     @Body() createPortfolioDto: CreatePortfolioDto,
     @GetUserId() userId: number,
     @UploadedFile(ImageFilePipe) file?: Express.Multer.File,
   ) {
-    return this.porfolioService.createPortfolio(
+    await this.porfolioService.createPortfolio(
       createPortfolioDto,
       userId,
       file,
     );
+    return 'Portfolio created with successfully'
   }
 
   @CheckPolicies('read', Portfolio)
@@ -44,11 +45,12 @@ export class PortfolioController {
   @UseInterceptors(FileInterceptor('photo'))
   @CheckPolicies('update', Portfolio)
   @Patch(':id')
-  update(
+  async update(
     @Body() dto: UpdatePortfolio,
     @Param('id') userId: number,
     @UploadedFile(ImageFilePipe) file?: Express.Multer.File,
   ) {
-    return this.porfolioService.updateUserPortfolio(userId, dto, file);
+    await this.porfolioService.updateUserPortfolio(userId, dto, file);
+    return 'Portfolio updated with successfully'
   }
 }

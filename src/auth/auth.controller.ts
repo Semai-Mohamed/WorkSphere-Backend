@@ -33,18 +33,20 @@ export class AuthController {
   @Public()
   @HttpCode(HttpStatus.CREATED)
   @Post('signUp')
-  signUp(@Body() signUpDto: CreateUserDto) {
-    return this.authService.signUP(signUpDto);
+  async signUp(@Body() signUpDto: CreateUserDto) {
+    await this.authService.signUP(signUpDto);
+    return 'User signUp with successfully'
   }
 
   @Public()
   @HttpCode(HttpStatus.ACCEPTED)
   @Post('signIn')
-  signIn(
+  async signIn(
     @Body() signInDto: LoginUserDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    return this.authService.signIn(signInDto, res);
+    await this.authService.signIn(signInDto, res);
+    return 'User signIn with successfully'
   }
 
   @Public()

@@ -15,11 +15,12 @@ export class ConversationController {
     @Param('freelancerId') freelancerId: number,
     @GetUserId() clientId: number,
   ) {
-    return this.conversationService.openConversation(
+    await this.conversationService.openConversation(
       offerId,
       clientId,
       freelancerId,
     );
+    return 'Conversation open with successfully'
   }
 
   @Get(':id')
