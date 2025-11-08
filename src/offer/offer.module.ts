@@ -6,12 +6,14 @@ import { User } from 'src/user/user.entity';
 import { Offre } from './offer.entity';
 import { CaslModule } from 'src/casl/casl.module';
 import { PaymentModule } from 'src/payment/payment.module';
+import { NotificationModule } from 'src/notification/notification.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User, Offre]),
     CaslModule,
     forwardRef(() => PaymentModule),
+    NotificationModule
   ],
   controllers: [OfferController],
   providers: [OfferService],

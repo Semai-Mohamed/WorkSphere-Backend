@@ -9,7 +9,6 @@ import { UserModule } from './user/user.module';
 import { User } from './user/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { CaslModule } from './casl/casl.module';
-import { DashbordModule } from './dashbord/dashbord.module';
 import { ConversationModule } from './conversation/conversation.module';
 import { NotificationModule } from './notification/notification.module';
 import { ProjectModule } from './project/project.module';
@@ -47,7 +46,6 @@ import { PaymentModule } from './payment/payment.module';
     UserModule,
     AuthModule,
     CaslModule,
-    DashbordModule,
     ConversationModule,
     NotificationModule,
     ProjectModule,

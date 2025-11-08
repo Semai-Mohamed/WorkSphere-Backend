@@ -5,9 +5,10 @@ import { TypeOrmModule } from 'node_modules/@nestjs/typeorm/dist/typeorm.module'
 import { Offre } from 'src/offer/offer.entity';
 import { StripeWebhookController } from './payment.controller';
 import { OfferModule } from 'src/offer/offer.module';
+import { NotificationModule } from 'src/notification/notification.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Offre, User]), forwardRef(() => OfferModule)],
+  imports: [TypeOrmModule.forFeature([Offre, User]), forwardRef(() => OfferModule),NotificationModule],
   providers: [PaymentService],
   controllers: [StripeWebhookController],
   exports: [PaymentService],

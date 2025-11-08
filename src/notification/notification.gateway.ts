@@ -4,7 +4,7 @@ import { Server, Socket } from 'node_modules/socket.io/dist';
 import { WsAuthGuard } from 'src/conversation/ws.auth.guard ';
 
 @UseGuards(WsAuthGuard)
-@WebSocketGateway(80,{namespace :'notification'})
+@WebSocketGateway(60,{namespace :'notification'})
 export class NotificationGateway {
   
   @WebSocketServer() server : Server

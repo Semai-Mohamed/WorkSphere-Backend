@@ -9,10 +9,12 @@ import { Offre } from 'src/offer/offer.entity';
 import { AuthModule } from 'src/auth/auth.module';
 import { WsAuthGuard } from './ws.auth.guard ';
 import { ConversationController } from './conversation.controller';
+import { NotificationModule } from 'src/notification/notification.module';
 
 @Module({
-  imports : [TypeOrmModule.forFeature([Message,Conversation,User,Offre]),AuthModule],
+  imports : [TypeOrmModule.forFeature([Message,Conversation,User,Offre]),AuthModule,NotificationModule],
   providers: [ConversationService, ConversationGateway,WsAuthGuard],
-  controllers : [ConversationController]
+  controllers : [ConversationController],
+  exports : [ConversationGateway,ConversationService]
 })
 export class ConversationModule {}
