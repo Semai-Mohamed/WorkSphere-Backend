@@ -3,8 +3,8 @@
 
 **Version:** 0.0.1  
 
+<p>WorkSpher is a freelance platform developed as a project for the "Conduit de Projet (CDP)" module in 2CS. It serves as a practical application of project management and software development concepts.</p>
 
-WorkSpher is a freelance platform developed as a project for the "Conduit de Projet (CDP)" module in 2CS. It serves as a practical application of project management and software development concepts.
 ---
 
 ## Table of Contents
@@ -13,7 +13,7 @@ WorkSpher is a freelance platform developed as a project for the "Conduit de Pro
 - [Installation](#installation)
 - [Environment Variables](#environment-variables)
 - [Running the Project](#running-the-project)
- - [API Documentation](#api--documentation)
+ - [API Documentation](#api-documentation)
 - [Linting & Formatting](#linting--formatting)
 - [Features](#features)
 - [Security & Validation](#security--validation)
