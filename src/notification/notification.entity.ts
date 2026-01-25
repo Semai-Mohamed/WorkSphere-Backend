@@ -1,5 +1,5 @@
 import { User } from 'src/user/user.entity';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
 
 @Entity()
 export class Notification {
@@ -17,4 +17,7 @@ export class Notification {
 
   @ManyToOne(() => User, { eager: true })
   user: User;
+
+  @CreateDateColumn()
+    createdAt: Date;
 }

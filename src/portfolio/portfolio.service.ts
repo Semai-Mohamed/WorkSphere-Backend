@@ -63,6 +63,7 @@ export class PortfolioService {
     dto: any,
     file?: Express.Multer.File,
   ): Promise<Portfolio> {
+    
     const portfolio = await this.getUserPortfolio(userId);
     let photoUrl: string | undefined = undefined;
     if (file) {
@@ -71,11 +72,10 @@ export class PortfolioService {
         'portfolios-photos',
       )) as string;
     }
-
     const updatedPortfolio = await this.portfolioRepository.preload({
       ...dto,
       id: portfolio.id,
-      photo: photoUrl,
+      photo: photoUrl ?? portfolio.photo,
     });
     if (!updatedPortfolio) {
       throw new BadRequestException('cannot update your portfolio');

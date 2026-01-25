@@ -26,7 +26,6 @@ export class RedisGuard implements CanActivate {
       throw new UnauthorizedException('Missing token or user id');
     }
     const storedToken = await this.redisClient.get(`reset:${userId}`);
-    console.log(`reset:${userId}`);
 
     if (!storedToken || storedToken !== token) {
       throw new BadRequestException('Invalid or expired token');

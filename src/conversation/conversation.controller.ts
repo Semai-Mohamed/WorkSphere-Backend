@@ -23,7 +23,7 @@ export class ConversationController {
     return 'Conversation open with successfully'
   }
 
-  @Get(':id')
+  @Get('messages/:id')
   async getMessages(
     @Param('id') conversationId: number,
     @GetUserId() userId: number,
@@ -33,4 +33,16 @@ export class ConversationController {
       userId,
     );
   }
+
+  @Get('')
+  async getUserConversations(@GetUserId() userId: number) {
+    return this.conversationService.getUserConversations(userId);
+  }
+
+  @Get('messages')
+  async getAllUserMessages(@GetUserId() userId: number) {
+    return this.conversationService.getAllMessages(userId);
+  }
 }
+ 
+  

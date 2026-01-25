@@ -70,7 +70,7 @@ export class AuthService {
   async googleSignIn(
     res: Response,
     user: any,
-  ): Promise<{ message: 'Login successful' }> {
+  ) {
     if (!user) {
       throw new BadRequestException('No user from google');
     }
@@ -78,7 +78,8 @@ export class AuthService {
     const { password: _, ...payload } = user;
     const jwt = await this.jwtStrategy.generateJwt(payload);
     this.cookiesStrategy.setAccessToken(res, jwt);
-    return { message: 'Login successful' };
+    return res.redirect('http://localhost:3001/signup/setting'); 
+;
   }
   async requestPasswordReset({ email }: EmailCheckDto) {
     return await this.redisClient.requestPasswordReset({ email });

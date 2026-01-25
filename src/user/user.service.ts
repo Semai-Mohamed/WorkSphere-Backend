@@ -65,6 +65,8 @@ export class UserService {
     return user;
   }
 
+  
+
   async updateUser(userId: number, dto: UpdateUserDto): Promise<User> {
     const user = await this.getUser(userId);
     const updatedUser = await this.userRepository.preload({

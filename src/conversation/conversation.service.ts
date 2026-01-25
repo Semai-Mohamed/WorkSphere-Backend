@@ -137,4 +137,28 @@ export class ConversationService {
       );
     return messages;
   }
+
+  async getUserConversations(userId: number) {
+    const conversations = await this.conversationRepository.find({
+      where: [
+        { creator: { id: userId } },
+        { participant: { id: userId } },
+      ],
+      relations: ['creator', 'participant'],
+      order: { messages: { createdAt: 'DESC' } },
+    });
+    if (!conversations)
+      throw new NotFoundException('cannot find conversations for this user');
+    return conversations;
+  }
+  async getAllMessages(userId: number) {
+     const messages = await this.messageRepository.find({where : [
+      { creator: { id: userId } },
+      { participant: { id: userId } },
+    ],relations: ['creator', 'participant', 'conversation'], 
+      order: { createdAt: 'DESC' },});
+    if (!messages)
+      throw new NotFoundException('cannot find messages for this user');
+    return messages;
+  }
 }

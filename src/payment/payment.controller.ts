@@ -78,19 +78,17 @@ export class StripeWebhookController {
 
       case 'account.updated':
         const account = event.data.object;
+        console.log('Account updated:', account.id);
         if (!account.details_submitted) {
           return 'not all details submitted yet';
         }
-
         if (!account.metadata)
           throw new NotFoundException('Cannot find the user metadata');
-        const freelancerId = account.metadata.userId;
-        const offerId = account.metadata.offerId;
-
+        const userId = account.metadata.userId;
         await this.paymentService.linkStripeAccount(
           account.id,
-          freelancerId,
-          offerId,
+          
+          userId,
         );
         break;
 

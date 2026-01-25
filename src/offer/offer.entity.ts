@@ -65,6 +65,10 @@ export class Offre {
 
   @Column({ default: false })
   freelancerConfirmed: boolean;
+  
+  @Column({ type: 'timestamp', nullable: true })
+  completedAt?: Date;
+    
 }
 /**
  

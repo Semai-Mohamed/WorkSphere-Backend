@@ -34,7 +34,7 @@ export class AuthGuard implements CanActivate {
     const isRevoked = await this.redisClient.get(`revoked:${token}`);
     if (isRevoked) throw new UnauthorizedException('Token revoked');
     if (!token) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException("you have to provide token");
     }
     try {
       const payload = await this.jwtStrategy.verifyJwt(token);

@@ -17,7 +17,12 @@ export class JwtStrategy {
   ): Promise<string> {
     const secret = this.configService.get<string>('JWT_SECRET');
 
-    return await this.jwtService.signAsync(payload, { secret, expiresIn });
+    return await this.jwtService.signAsync(payload, {
+      secret,
+      expiresIn,
+      algorithm: 'HS256', // explicitly set
+    });
+
   }
   async verifyJwt(token: string) {
     const secret = this.configService.get<string>('JWT_SECRET');

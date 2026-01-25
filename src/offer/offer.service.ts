@@ -9,7 +9,7 @@ import { InjectRepository } from 'node_modules/@nestjs/typeorm';
 import { Offre } from './offer.entity';
 import { DataSource, Repository } from 'node_modules/typeorm';
 import { User } from 'src/user/user.entity';
-import { CreateOffreDto, UpdateOffreDto } from 'src/dto/offer.service.dto';
+import { CreateOffreDto, Status, UpdateOffreDto } from 'src/dto/offer.service.dto';
 import { RequestWithUser } from 'src/dto/auth.dto';
 import { PaymentService } from 'src/payment/payment.service';
 import { NotificationService } from 'src/notification/notification.service';
@@ -36,10 +36,16 @@ export class OfferService {
      return 'Offer created with successfully'
   }
 
+  async getOffers() {
+    const offers = await this.offerRepository.find({ relations: ['user'] });
+    if (!offers) throw new BadRequestException('Cannot get offers');
+    return offers;
+  }
+
   async GetOffersByUser(userId: number) {
     const offers = await this.offerRepository.find({
       where: { user: { id: userId } },
-      relations: ['user'],
+      relations: ['user','user.portfolio'],
     });
     if (!offers) throw new BadRequestException('Cannot get offers');
     return offers;
@@ -73,17 +79,18 @@ export class OfferService {
   }
 
   async enrolled(userId: number, offerId: number) {
+
     return this.dataSource.transaction(async (manager) => {
       const offerRepo = manager.getRepository(Offre);
       const userRepo = manager.getRepository(User);
 
       const offer = await offerRepo.findOne({
         where: { id: offerId },
-        relations: ['enroledUsers'],
+        relations: ['enroledUsers','user'],
       });
       const user = await userRepo.findOne({
         where: { id: userId },
-        relations: ['enrolledOffres'],
+        relations: ['enrolledOffres']
       });
 
       if (!offer) throw new NotFoundException('Offer not found');
@@ -97,7 +104,6 @@ export class OfferService {
 
       await userRepo.save(user);
       await offerRepo.save(offer);
-
       await this.notificationService.createNotification(
         {
           message: `User ${user.id} enrolled in your offer`,
@@ -213,5 +219,21 @@ export class OfferService {
 
       return { message: 'Offer approved successfully', payment };
     });
+  }
+  async getAcceptedOffersByUser(userId: number) {
+    const offers = await this.offerRepository.find({
+      where: { accepted: { id: userId } , status: Status.NOTFINISHED},
+      relations: ['user', 'accepted'],
+    });
+    if (!offers) throw new NotFoundException('Cannot get offers');
+    return offers;
+  }
+  async getFinishedOffersByUser(userId: number) {
+    const offers = await this.offerRepository.find({
+      where: { accepted: { id: userId } , status: Status.FINISHED},
+      relations: ['user', 'accepted'],
+    });
+    if (!offers) throw new NotFoundException('Cannot get offers');
+    return offers;
   }
 }

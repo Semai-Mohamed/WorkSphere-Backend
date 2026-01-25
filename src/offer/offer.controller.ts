@@ -42,6 +42,12 @@ export class OfferController {
     return this.offerService.GetOfferById(offerId);
   }
 
+  @CheckPolicies('read', Offre)
+  @Get()
+  getOffers() {
+    return this.offerService.getOffers();
+  }
+
   @CheckPolicies('update', Offre)
   @Patch(':id')
   updateOffer(@Param('id') offerId: number, @Body() dto: UpdateOffreDto) {
@@ -106,16 +112,25 @@ export class OfferController {
   }
 
   @CheckPolicies('update', User)
-  @Post('payment/account/:userId/:offerId')
+  @Post('payment/account/:userId')
   async createStripeAccount(
     @Param('userId') userId: number,
-    @Param('offerId') offerId: number,
   ) {
-    console.log(userId, offerId);
     const payment = await this.paymentService.createFreelancerAccount(
       userId,
-      offerId,
     );
     return payment.url;
+  }
+
+  @CheckPolicies('read', Offre)
+  @Get('accepted/user/:id')
+  async getAcceptedOffersByUser(@GetUserId('id') userId: number) {
+    return this.offerService.getAcceptedOffersByUser(userId);
+  }
+
+  @CheckPolicies('read', Offre)
+  @Get('finished/user/:id')
+  async getFinishedOffersByUser(@GetUserId('id') userId: number) {
+    return this.offerService.getFinishedOffersByUser(userId);
   }
 }

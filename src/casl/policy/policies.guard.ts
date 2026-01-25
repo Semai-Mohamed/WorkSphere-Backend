@@ -51,11 +51,9 @@ export class PoliciesGuard implements CanActivate {
             })) || subject;
         }
       }
-      console.log(entity);
       const canAccess = fieldName
         ? ability.can(action, entity, fieldName)
         : ability.can(action, entity);
-      console.log(action, entity);
       if (canAccess) return true;
     }
 

@@ -37,7 +37,6 @@ export class GoogleService {
       if (!user) {
         throw new BadGatewayException('could not sign in with google');
       }
-      console.log(user);
       done(null, user);
     } catch (err) {
       done(err, false);

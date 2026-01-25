@@ -38,4 +38,14 @@ export class Portfolio {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @Column({ default: 0 })
+  totalAmount: number;
+
+  @Column({default: 0})
+  thisMonthAmount: number;
+
+  @Column({ default: 0 })
+  previousMonthAmount: number;
+
 }

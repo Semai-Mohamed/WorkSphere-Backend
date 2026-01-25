@@ -4,7 +4,6 @@ import { UserService } from './user.service';
 import { CheckPolicies } from 'src/casl/policy/policy.metadata';
 import { User } from './user.entity';
 import { GetUserId } from 'src/common/user.decorator';
-import type { RequestWithUser } from 'src/dto/auth.dto';
 import { UpdateUserDto } from 'src/dto/user.dto';
 
 @Controller('user')
@@ -12,8 +11,8 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get('profile')
-  getProfile(@Req() req: RequestWithUser) {
-    return req.user;
+  getProfile(@GetUserId() userId: number) {
+    return this.userService.getUser(userId);
   }
 
   @CheckPolicies('read', User)

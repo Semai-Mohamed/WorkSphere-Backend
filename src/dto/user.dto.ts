@@ -6,6 +6,7 @@ import {
   IsEnum,
   Matches,
   IsString,
+  MaxLength,
 } from 'class-validator';
 import { PartialType, PickType } from '@nestjs/swagger';
 import { ApiProperty } from '@nestjs/swagger';
@@ -25,11 +26,15 @@ export class CreateUserDto {
   id: number;
 
   @ApiProperty({ example: 'Mohammed' })
+  @MinLength(2, { message: 'First name must be at least 2 characters' })
+  @MaxLength(50, { message: 'First name must be at most 50 characters' })
   @IsNotEmpty({ message: 'First name is required' })
   @IsString()
   firstName: string;
 
   @ApiProperty({ example: 'Semai' })
+  @MinLength(2, { message: 'Last name must be at least 2 characters' })
+  @MaxLength(50, { message: 'Last name must be at most 50 characters' })
   @IsNotEmpty({ message: 'Last name is required' })
   @IsString()
   lastName: string;

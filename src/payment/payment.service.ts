@@ -33,21 +33,21 @@ export class PaymentService {
     );
   }
 
-  async createFreelancerAccount(userId: number, offerId: number) {
+  async createFreelancerAccount(userId: number) {
     const user = await this.userRepository.findOne({ where: { id: userId } });
     if (!user) throw new BadRequestException('User not found');
     let link: any;
     try {
       const account = await this.stripe.accounts.create({
         type: 'express',
-        metadata: { userId: userId.toString(), offerId: offerId.toString() },
+        metadata: { userId: userId.toString() },
       });
       link = await this.stripe.accountLinks.create({
         account: account.id,
         refresh_url:
-          this.configService.get('BackendHost') + '/onboarding/failed',
+          'http://localhost:3001/frl',
         return_url:
-          this.configService.get('BackendHost') + '/onboarding/success',
+          'http://localhost:3001/frl',
         type: 'account_onboarding',
       });
     } catch (error) {
@@ -154,19 +154,16 @@ export class PaymentService {
   async linkStripeAccount(
     accountId: string,
     freelancer: string,
-    offer: string,
   ) {
     const freelancerId = parseInt(freelancer);
-    const offerId = parseInt(offer);
-    const offerRepo = await this.offerRepository.findOne({
-      where: { id: offerId },
-    });
+
+   
     const userRepo = await this.userRepository.findOne({
       where: { id: freelancerId },
     });
 
-    if (!userRepo || !offerRepo) {
-      throw new NotFoundException('User or Offer not found');
+    if (!userRepo ) {
+      throw new NotFoundException('User not found');
     }
     userRepo.stripeAccountId = accountId;
     await this.userRepository.save(userRepo);

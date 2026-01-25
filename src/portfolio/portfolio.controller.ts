@@ -44,12 +44,13 @@ export class PortfolioController {
 
   @UseInterceptors(FileInterceptor('photo'))
   @CheckPolicies('update', Portfolio)
-  @Patch(':id')
+  @Patch('')
   async update(
     @Body() dto: UpdatePortfolio,
-    @Param('id') userId: number,
+    @GetUserId() userId: number,
     @UploadedFile(ImageFilePipe) file?: Express.Multer.File,
   ) {
+    console.log('mohamed')
     await this.porfolioService.updateUserPortfolio(userId, dto, file);
     return 'Portfolio updated with successfully'
   }

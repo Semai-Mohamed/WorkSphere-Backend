@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { UserModule } from './user/user.module';
@@ -25,24 +25,27 @@ import { APP_GUARD } from 'node_modules/@nestjs/core';
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: '.development.env', isGlobal: true }),
-    TypeOrmModule.forRoot({
+    TypeOrmModule.forRootAsync({
+  imports: [ConfigModule],
+  inject: [ConfigService],
+  useFactory: (configService: ConfigService) => {
+    // 👇 Add this line to debug
+
+    return {
       type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: 'postgres',
-      database: 'postgres',
+      host: configService.get<string>('DB_HOST'),
+      port: configService.get<number>('DB_PORT'),
+      username: configService.get<string>('DB_USERNAME'),
+      password: configService.get<string>('DB_PASSWORD'),
+      database: configService.get<string>('DB_NAME'),
       entities: [
-        User,
-        Project,
-        Notification,
-        Conversation,
-        Message,
-        Offre,
-        Portfolio,
+        User, Project, Notification, Conversation, Message, Offre, Portfolio,
       ],
-      synchronize: true,
-    }),
+      ssl: { rejectUnauthorized: false }, 
+      synchronize: true, 
+    };
+  },
+}),
     ThrottlerModule.forRoot({
       throttlers: [
         {

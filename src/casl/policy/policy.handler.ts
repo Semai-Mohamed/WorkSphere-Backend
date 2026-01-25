@@ -9,7 +9,7 @@ interface IPolicyHandler {
 type PolicyHandlerCallback = (ability: AppAbility) => boolean;
 export type PolicyHandler = IPolicyHandler | PolicyHandlerCallback;
 
-export class WorkSpherPolicyHandler implements IPolicyHandler {
+export class WorkWavePolicyHandler implements IPolicyHandler {
   constructor(
     private readonly action: any,
     private readonly subject: any,

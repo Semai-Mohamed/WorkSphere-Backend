@@ -19,7 +19,7 @@ export class NodeMailderStrategy {
     });
     try {
       await transporter.sendMail({
-        from: 'WorkSpher',
+        from: 'WorkWave',
         to: email,
         subject: 'Password Reset Request',
         html: `<p>You requested a password reset.</p>

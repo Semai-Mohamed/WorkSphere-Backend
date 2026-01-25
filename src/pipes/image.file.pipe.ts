@@ -1,4 +1,4 @@
-import { Injectable, HttpStatus, PipeTransform } from '@nestjs/common';
+import { Injectable, PipeTransform } from '@nestjs/common';
 import { ParseFilePipeBuilder } from '@nestjs/common';
 
 @Injectable()
@@ -12,7 +12,7 @@ export class ImageFilePipe implements PipeTransform {
         maxSize: 5 * 1024 * 1024,
       })
       .build({
-        errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+       fileIsRequired: false,
       });
 
     return pipe.transform(file);

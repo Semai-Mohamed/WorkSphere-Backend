@@ -35,7 +35,6 @@ export class RedisClient {
     if (!user) throw new UnauthorizedException('User not found');
 
     const token = crypto.randomBytes(32).toString('hex');
-    console.log(`reset:${user.id}`);
     await this.redisClient.set(`reset:${user.id}`, token, 'EX', 900);
     const link = `${this.configService.get<string>('FrontendHost')}auth/reset-password?token=${token}&id=${user.id}`;
     await this.nodeMailderStrategy.sendResetEmail({ email }, link);
