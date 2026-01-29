@@ -1,6 +1,5 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { Transport } from '@nestjs/microservices';
 import { ValidationPipe } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
 import { AllExceptionsFilter } from './filters/filter.exceptions';
@@ -54,14 +53,7 @@ async function bootstrap() {
   );
   app.useGlobalFilters(new AllExceptionsFilter());
 
-  // Attach microservice
-  app.connectMicroservice({
-    transport: Transport.REDIS,
-    options: {
-      host: 'localhost',
-      port: 6379,
-    },
-  });
+  
 
   // Redis Adapter
   const redisIoAdapter = new RedisIoAdapter(app);
@@ -75,6 +67,7 @@ async function bootstrap() {
   }); 
 
   await app.startAllMicroservices();
-  await app.listen(3000);
+ const port = process.env.PORT || 3000;
+  await app.listen(port, '0.0.0.0');
 }
 bootstrap();
