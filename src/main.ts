@@ -65,6 +65,7 @@ async function bootstrap() {
     origin: [
       'https://work-sphere-frontend-pc3n-oxposi4g9-semai-mohameds-projects.vercel.app',
       'http://localhost:3000', 
+      'https://work-sphere-frontend.vercel.app'
     ],
     
    
