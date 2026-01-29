@@ -62,9 +62,17 @@ async function bootstrap() {
 
 
   app.enableCors({
-    credentials: true,
-    allowedHeaders: 'Content-Type, Authorization',
-  }); 
+    origin: [
+      'https://work-sphere-frontend-pc3n-oxposi4g9-semai-mohameds-projects.vercel.app',
+      'http://localhost:3000', 
+    ],
+    
+   
+    credentials: true, 
+    
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type, Accept, Authorization',
+  });
 
   await app.startAllMicroservices();
  const port = process.env.PORT || 3000;
