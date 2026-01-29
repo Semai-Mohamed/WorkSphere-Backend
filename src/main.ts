@@ -11,8 +11,8 @@ import { AsyncApiDocumentBuilder, AsyncApiModule } from 'nestjs-asyncapi';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { rawBody: true });
   const config = new DocumentBuilder()
-    .setTitle('WorkWave')
-    .setDescription('API for the WorkWave application')
+    .setTitle('WorkSphere')
+    .setDescription('API for the WorkSphere application')
     .setVersion('1.0')
     .addTag('Platform')
     .build();
@@ -24,9 +24,9 @@ async function bootstrap() {
     .setDescription('Notification and Conversation WebSocket APIs')
     .setVersion('1.0')
     .setContact(
-      'WorkWave',
+      'WorkSphere',
       'https://github.com/Semai-Mohamed',
-      'WorkWave@gmail.com',
+      'WorkSphere@gmail.com',
     )
     .addServer('notification-ws', {
       url: 'ws://localhost:60/notification',
@@ -70,7 +70,6 @@ async function bootstrap() {
 
 
   app.enableCors({
-    origin: 'http://localhost:3001',
     credentials: true,
     allowedHeaders: 'Content-Type, Authorization',
   }); 

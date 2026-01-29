@@ -12,7 +12,6 @@ import { APP_GUARD } from 'node_modules/@nestjs/core';
 import { AuthGuard } from './auth.guard';
 import { JwtStrategy } from '../common/strategies/token/jwt.strategy';
 import { GoogleStrategy } from '../common/strategies/google.strategy';
-import { ClientsModule, Transport } from '@nestjs/microservices';
 import Redis from 'ioredis';
 import { RedisClient } from '../common/strategies/redis/redis.client';
 import { RedisGuard } from '../common/strategies/redis/redis.guard';
@@ -24,17 +23,7 @@ import { CookiesStrategy } from '../common/strategies/token/cookies.strategy';
   imports: [
     TypeOrmModule.forFeature([User]),
     forwardRef(() => UserModule),
-    // نستحق هذي فل مين يكون عندي بزاف microservices مشي multiple app instance
-    ClientsModule.register([
-      {
-        name: 'Client_REDIS_SERVICE',
-        transport: Transport.REDIS,
-        options: {
-          host: 'localhost',
-          port: 6379,
-        },
-      },
-    ]),
+   
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -58,14 +47,30 @@ import { CookiesStrategy } from '../common/strategies/token/cookies.strategy';
       useClass: AuthGuard,
     },
     {
-      provide: 'REDIS_CLIENT',
-      useFactory: () => {
-        return new Redis({
-          host: 'localhost',
-          port: 6379,
-        });
-      },
-    },
+  provide: 'REDIS_CLIENT',
+  useFactory: (configService: ConfigService) => {
+    const redisUrl = configService.get<string>('REDIS_URL');
+
+    // 1. Production / Upstash
+    if (redisUrl) {
+
+      return new Redis(redisUrl, {
+        family: 4,
+        tls: {
+          rejectUnauthorized: false
+        },
+      });
+    }
+
+    // 2. Localhost Fallback
+    
+    return new Redis({
+      host: configService.get<string>('REDIS_HOST', 'localhost'),
+      port: configService.get<number>('REDIS_PORT', 6379),
+    });
+  },
+  inject: [ConfigService],
+},
   ],
   exports: [JwtStrategy, GoogleStrategy, 'REDIS_CLIENT'],
 })
