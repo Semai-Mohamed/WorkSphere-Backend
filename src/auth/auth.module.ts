@@ -59,6 +59,12 @@ import { CookiesStrategy } from '../common/strategies/token/cookies.strategy';
         tls: {
           rejectUnauthorized: false
         },
+        lazyConnect: true,   
+        retryStrategy: (times) => {
+         
+          if (times > 50) return null;
+          return 5000;
+        },
       });
     }
 
